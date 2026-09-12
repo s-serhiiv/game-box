@@ -144,6 +144,18 @@ namespace gb
             ui32 array_buffer = GL_ARRAY_BUFFER;
             ui32 element_array_buffer = GL_ELEMENT_ARRAY_BUFFER;
             ui32 triangles = GL_TRIANGLES;
+            ui32 func_min = GL_MIN;
+            ui32 func_max = GL_MAX;
+            ui32 stencil_op_keep = GL_KEEP;
+            ui32 stencil_op_zero = GL_ZERO;
+            ui32 stencil_op_replace = GL_REPLACE;
+            ui32 stencil_op_inc_clamp = GL_INCR;
+            ui32 stencil_op_dec_clamp = GL_DECR;
+            ui32 stencil_op_inv = GL_INVERT;
+            ui32 stencil_op_inc_wrap = GL_INCR_WRAP;
+            ui32 stencil_op_dec_wrap = GL_DECR_WRAP;
+            ui32 less = GL_LESS;
+            ui32 less_equal = GL_LEQUAL;
             
 #else
             

@@ -63,6 +63,16 @@ namespace gb
 			}
 		}
 	}
+
+	void pause_run_loop()
+	{
+		game_loop_win32::shared_instance()->pause_run_loop();
+	}
+
+	void resume_run_loop()
+	{
+		game_loop_win32::shared_instance()->resume_run_loop();
+	}
 }
 
 #endif

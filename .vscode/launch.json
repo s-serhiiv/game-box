@@ -1,0 +1,14 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Run gbDemo (Debug x64)",
+            "type": "cppvsdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}\\gbDemo\\output\\debug\\x64\\gb_demo.exe",
+            "cwd": "${workspaceFolder}\\gbDemo",
+            "preLaunchTask": "Build gbDemo (Debug x64)",
+            "console": "internalConsole"
+        }
+    ]
+}

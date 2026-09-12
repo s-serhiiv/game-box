@@ -91,13 +91,11 @@
     <ClCompile Include="sources\gameplay_ui_fabricator.cpp" />
     <ClCompile Include="sources\game_conroller_win32.cpp" />
     <ClCompile Include="sources\game_objects_custom_uniforms.cpp" />
-    <ClCompile Include="sources\levels_list_table_view_cell.cpp" />
     <ClCompile Include="sources\main.cpp" />
     <ClCompile Include="sources\main_game_controller.cpp" />
     <ClCompile Include="sources\main_menu_scene.cpp" />
     <ClCompile Include="sources\main_menu_transition.cpp" />
     <ClCompile Include="sources\ss_render_technique_custom_uniforms.cpp" />
-    <ClCompile Include="sources\tracking_events_provider.cpp" />
     <ClCompile Include="sources\ui_animation_helper.cpp" />
     <ClCompile Include="sources\ui_controls_helper.cpp" />
     <ClCompile Include="sources\ui_editable_fabricator.cpp" />
@@ -160,13 +158,11 @@
     <ClInclude Include="sources\gameplay_ui_fabricator.h" />
     <ClInclude Include="sources\game_conroller_win32.h" />
     <ClInclude Include="sources\game_objects_custom_uniforms.h" />
-    <ClInclude Include="sources\levels_list_table_view_cell.h" />
     <ClInclude Include="sources\main_game_controller.h" />
     <ClInclude Include="sources\main_menu_scene.h" />
     <ClInclude Include="sources\main_menu_transition.h" />
     <ClInclude Include="sources\ns_ui_commands.h" />
     <ClInclude Include="sources\ss_render_technique_custom_uniforms.h" />
-    <ClInclude Include="sources\tracking_events_provider.h" />
     <ClInclude Include="sources\ui_animation_helper.h" />
     <ClInclude Include="sources\ui_controls_helper.h" />
     <ClInclude Include="sources\ui_editable_fabricator.h" />
@@ -306,7 +302,7 @@
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>..\gbCore\output\debug\x86;..\gbSound\output\debug\x86;..\gbUI\output\debug\x86;..\gbAnimation\output\debug\x86;..\gbNetwork\output\debug\x86;..\gbDatabase\output\debug\x86;..\gbCore\libraries\glew-2.0.0\lib\Win32;C:\VulkanSDK\1.1.73.0\Lib32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>gb_core.lib;gb_sound.lib;gb_database.lib;gb_ui.lib;gb_animation.lib;gb_network.lib;opengl32.lib;glew32.lib;vulkan-1.lib;shaderc_combined-d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>gb_core.lib;gb_sound.lib;gb_database.lib;gb_ui.lib;gb_network.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='debug-server|Win32'">
@@ -329,7 +325,7 @@
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>C:\Users\sserh\Documents\hobby\game-box\gbCore\output\debug;C:\Users\sserh\Documents\hobby\game-box\gbUI\output\debug;C:\Users\sserh\Documents\hobby\game-box\gbAnimation\output\debug;C:\Users\sserh\Documents\hobby\game-box\gbNetwork\output\debug;C:\Users\sserh\Documents\hobby\game-box\gbCore\libraries\glew-2.0.0\lib\Win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>gbCore.lib;gbUI.lib;gbAnimation.lib;gbNetwork.lib;opengl32.lib;glew32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>gbCore.lib;gbUI.lib;gbAnimation.lib;gbNetwork.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='debug-client|x64'">
@@ -348,7 +344,7 @@
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>..\gbCore\output\debug\x64;..\gbSound\output\debug\x64;..\gbUI\output\debug\x64;..\gbAnimation\output\debug\x64;..\gbNetwork\output\debug\x64;..\gbDatabase\output\debug\x64;..\gbCore\libraries\glew-2.0.0\lib\x64;C:\VulkanSDK\1.1.73.0\Lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>gb_core.lib;gb_sound.lib;gb_database.lib;gb_ui.lib;gb_animation.lib;gb_network.lib;opengl32.lib;glew32.lib;vulkan-1.lib;shaderc_combined.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>gb_core.lib;gb_sound.lib;gb_database.lib;gb_ui.lib;gb_network.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
       <ProgramDatabaseFile>.\output\debug\x64\$(ProjectName).pdb</ProgramDatabaseFile>
     </Link>
@@ -377,7 +373,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalLibraryDirectories>..\gbCore\output\release\x86;..\gbSound\output\release\x86;..\gbUI\output\release\x86;..\gbAnimation\output\release\x86;..\gbNetwork\output\release\x86;..\gbDatabase\output\release\x86;..\gbCore\libraries\glew-2.0.0\lib\Win32;C:\VulkanSDK\1.1.73.0\Lib32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>gb_core.lib;gb_sound.lib;gb_database.lib;gb_ui.lib;gb_animation.lib;gb_network.lib;opengl32.lib;glew32.lib;vulkan-1.lib;shaderc_combined.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>gb_core.lib;gb_sound.lib;gb_database.lib;gb_ui.lib;gb_network.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='release-server|Win32'">
@@ -398,7 +394,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalLibraryDirectories>C:\Users\sserh\Documents\hobby\game-box\gbCore\output\release;C:\Users\sserh\Documents\hobby\game-box\gbUI\output\release;C:\Users\sserh\Documents\hobby\game-box\gbAnimation\output\release;C:\Users\sserh\Documents\hobby\game-box\gbNetwork\output\release;C:\Users\sserh\Documents\hobby\game-box\gbCore\libraries\glew-2.0.0\lib\Win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>gbCore.lib;gbUI.lib;gbAnimation.lib;gbNetwork.lib;opengl32.lib;glew32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>gbCore.lib;gbUI.lib;gbAnimation.lib;gbNetwork.lib;opengl32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='release-client|x64'">
@@ -421,7 +417,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalLibraryDirectories>..\gbCore\output\release\x64;..\gbSound\output\release\x64;..\gbUI\output\release\x64;..\gbAnimation\output\release\x64;..\gbNetwork\output\release\x64;..\gbDatabase\output\release\x64;..\gbCore\libraries\glew-2.0.0\lib\x64;C:\VulkanSDK\1.1.73.0\Lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>gb_core.lib;gb_sound.lib;gb_database.lib;gb_ui.lib;gb_animation.lib;gb_network.lib;opengl32.lib;glew32.lib;vulkan-1.lib;shaderc_combined.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>gb_core.lib;gb_sound.lib;gb_database.lib;gb_ui.lib;gb_network.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='release-server|x64'">
@@ -437,6 +433,29 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
   </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="sources\career_table_view_cell.cpp" />
+    <ClCompile Include="sources\ces_car_boost_system.cpp" />
+    <ClCompile Include="sources\ces_car_impact_component.cpp" />
+    <ClCompile Include="sources\ces_daily_task_database_component.cpp" />
+    <ClCompile Include="sources\ces_level_item_cash_component.cpp" />
+    <ClCompile Include="sources\ces_level_item_oil_compoment.cpp" />
+    <ClCompile Include="sources\ces_level_item_shield_component.cpp" />
+    <ClCompile Include="sources\ces_ui_move_animation_action_component.cpp" />
+    <ClCompile Include="sources\daily_task_table_view_cell.cpp" />
+    <ClCompile Include="sources\db_daily_task_table.cpp" />
+    <ClCompile Include="sources\events_provider.cpp" />
+    <ClCompile Include="sources\facebook_provider.cpp" />
+    <ClCompile Include="sources\gameplay_constants_helper.cpp" />
+    <ClCompile Include="sources\platform_services_win32.cpp" />
+    <ClCompile Include="sources\in_game_scene.cpp" />
+    <ClCompile Include="sources\in_game_transition.cpp" />
+    <ClCompile Include="sources\shop_table_view_cell.cpp" />
+    <ClCompile Include="sources\ui_dialogs_helper.cpp" />
+    <ClCompile Include="sources\ui_editor_scene..cpp" />
+    <ClCompile Include="sources\ui_editor_transition.cpp" />
+    <ClCompile Include="sources\ui_menus_helper.cpp" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

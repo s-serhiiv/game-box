@@ -8,7 +8,7 @@ namespace gb
 {
 	window_impl::window_impl(void* hwnd)
 	{
-		assert(m_hwnd);
+		assert(hwnd);
 		m_size = *static_cast<glm::ivec2*>(hwnd);
 
 		m_hwnd = 0;
@@ -119,15 +119,16 @@ namespace gb
 		return m_hdc;
 	}
 
-	ui32 window_impl::get_width() const
+	glm::ivec2 window_impl::get_resolution_size_in_pixels()
 	{
-		return m_size.x;
+		return m_size;
 	}
 
-	ui32 window_impl::get_height() const
+	glm::ivec2 window_impl::get_resolution_size_in_points()
 	{
-		return m_size.y;
+		return m_size;
 	}
+
 }
 
 #endif

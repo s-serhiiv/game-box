@@ -557,17 +557,6 @@
     <ClInclude Include="sources\ces_geometry_extension.h" />
     <ClInclude Include="sources\ces_geometry_freeform_component.h" />
     <ClInclude Include="sources\ces_geometry_quad_component.h" />
-    <ClInclude Include="sources\ces_heightmap_accessor_component.h" />
-    <ClInclude Include="sources\ces_heightmap_assembling_system.h" />
-    <ClInclude Include="sources\ces_heightmap_bounding_boxes_component.h" />
-    <ClInclude Include="sources\ces_heightmap_chunks_component.h" />
-    <ClInclude Include="sources\ces_heightmap_chunk_lod_component.h" />
-    <ClInclude Include="sources\ces_heightmap_configuration_component.h" />
-    <ClInclude Include="sources\ces_heightmap_container_component.h" />
-    <ClInclude Include="sources\ces_heightmap_lod_system.h" />
-    <ClInclude Include="sources\ces_heightmap_preprocessing_component.h" />
-    <ClInclude Include="sources\ces_heightmap_quad_tree_component.h" />
-    <ClInclude Include="sources\ces_heightmap_splatting_texture_preprocessing_component.h" />
     <ClInclude Include="sources\ces_light_compoment.h" />
     <ClInclude Include="sources\ces_light_mask_component.h" />
     <ClInclude Include="sources\ces_material_component.h" />
@@ -616,12 +605,6 @@
     <ClInclude Include="sources\glm_extensions.h" />
     <ClInclude Include="sources\gl_commands.hpp" />
     <ClInclude Include="sources\graphics_context.h" />
-    <ClInclude Include="sources\heightmap.h" />
-    <ClInclude Include="sources\heightmap_constants.h" />
-    <ClInclude Include="sources\heightmap_geometry_generator.h" />
-    <ClInclude Include="sources\heightmap_mmap.h" />
-    <ClInclude Include="sources\heightmap_quad_tree.h" />
-    <ClInclude Include="sources\heightmap_textures_generator.h" />
     <ClInclude Include="sources\ibo.h" />
     <ClInclude Include="sources\input_context.h" />
     <ClInclude Include="sources\i_binding.h" />
@@ -1063,17 +1046,6 @@
     <ClCompile Include="sources\ces_geometry_extension.cpp" />
     <ClCompile Include="sources\ces_geometry_freeform_component.cpp" />
     <ClCompile Include="sources\ces_geometry_quad_component.cpp" />
-    <ClCompile Include="sources\ces_heightmap_accessor_component.cpp" />
-    <ClCompile Include="sources\ces_heightmap_assembling_system.cpp" />
-    <ClCompile Include="sources\ces_heightmap_bounding_boxes_component.cpp" />
-    <ClCompile Include="sources\ces_heightmap_chunks_component.cpp" />
-    <ClCompile Include="sources\ces_heightmap_chunk_lod_component.cpp" />
-    <ClCompile Include="sources\ces_heightmap_configuration_component.cpp" />
-    <ClCompile Include="sources\ces_heightmap_container_component.cpp" />
-    <ClCompile Include="sources\ces_heightmap_lod_system.cpp" />
-    <ClCompile Include="sources\ces_heightmap_preprocessing_component.cpp" />
-    <ClCompile Include="sources\ces_heightmap_quad_tree_component.cpp" />
-    <ClCompile Include="sources\ces_heightmap_splatting_texture_preprocessing_component.cpp" />
     <ClCompile Include="sources\ces_light_compoment.cpp" />
     <ClCompile Include="sources\ces_light_mask_component.cpp" />
     <ClCompile Include="sources\ces_material_component.cpp" />
@@ -1126,12 +1098,6 @@
     <ClCompile Include="sources\graphics_context_ios.cpp" />
     <ClCompile Include="sources\graphics_context_osx.cpp" />
     <ClCompile Include="sources\graphics_context_win32.cpp" />
-    <ClCompile Include="sources\heightmap.cpp" />
-    <ClCompile Include="sources\heightmap_constants.cpp" />
-    <ClCompile Include="sources\heightmap_geometry_generator.cpp" />
-    <ClCompile Include="sources\heightmap_mmap.cpp" />
-    <ClCompile Include="sources\heightmap_quad_tree.cpp" />
-    <ClCompile Include="sources\heightmap_textures_generator.cpp" />
     <ClCompile Include="sources\ibo.cpp" />
     <ClCompile Include="sources\input_context.cpp" />
     <ClCompile Include="sources\input_context_ios.cpp" />
@@ -1500,7 +1466,7 @@
       <AdditionalDependencies>opengl32.lib;glu32.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Lib>
-      <AdditionalDependencies>glew32.lib;vulkan-1.lib;shaderc_combined-d.lib</AdditionalDependencies>
+      <AdditionalDependencies>glew32s.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>.\libraries\glew-2.0.0\lib\Win32;C:\VulkanSDK\1.1.73.0\Lib32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
@@ -1548,7 +1514,7 @@
       <AdditionalDependencies>opengl32.lib;glu32.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Lib>
-      <AdditionalDependencies>glew32.lib;vulkan-1.lib;shaderc_combined.lib;</AdditionalDependencies>
+      <AdditionalDependencies>glew32s.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>.\libraries\glew-2.0.0\lib\x64;C:\VulkanSDK\1.1.73.0\Lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
@@ -1597,7 +1563,7 @@
       <AdditionalDependencies>opengl32.lib;glu32.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Lib>
-      <AdditionalDependencies>glew32.lib;</AdditionalDependencies>
+      <AdditionalDependencies>glew32s.lib;</AdditionalDependencies>
       <AdditionalLibraryDirectories>C:\Users\sserh\Documents\hobby\game-box\gbCore\libraries\glew-2.0.0\lib\Win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
@@ -1644,7 +1610,7 @@
       <AdditionalDependencies>opengl32.lib;glu32.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Lib>
-      <AdditionalDependencies>glew32.lib;</AdditionalDependencies>
+      <AdditionalDependencies>glew32s.lib;</AdditionalDependencies>
       <AdditionalLibraryDirectories>C:\Users\sserh\Documents\hobby\game-box\gbCore\libraries\glew-2.0.0\lib\Win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
@@ -1689,7 +1655,7 @@
       <AdditionalDependencies>opengl32.lib;glu32.lib;glaux.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Lib>
-      <AdditionalDependencies>glew32.lib;vulkan-1.lib;shaderc_combined.lib;</AdditionalDependencies>
+      <AdditionalDependencies>glew32s.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>.\libraries\glew-2.0.0\lib\Win32;C:\VulkanSDK\1.1.73.0\Lib32</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
@@ -1734,7 +1700,7 @@
       <AdditionalDependencies>opengl32.lib;glu32.lib;glaux.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Lib>
-      <AdditionalDependencies>glew32.lib;vulkan-1.lib;shaderc_combined.lib;</AdditionalDependencies>
+      <AdditionalDependencies>glew32s.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>.\libraries\glew-2.0.0\lib\x64;C:\VulkanSDK\1.1.73.0\Lib</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
@@ -1777,7 +1743,7 @@
       <AdditionalDependencies>opengl32.lib;glu32.lib;glaux.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Lib>
-      <AdditionalDependencies>glew32.lib;</AdditionalDependencies>
+      <AdditionalDependencies>glew32s.lib;</AdditionalDependencies>
       <AdditionalLibraryDirectories>C:\Users\sserh\Documents\hobby\game-box\gbCore\libraries\glew-2.0.0\lib\Win32;</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
@@ -1819,10 +1785,19 @@
       <AdditionalDependencies>opengl32.lib;glu32.lib;glaux.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Lib>
-      <AdditionalDependencies>glew32.lib;</AdditionalDependencies>
+      <AdditionalDependencies>glew32s.lib;</AdditionalDependencies>
       <AdditionalLibraryDirectories>C:\Users\sserh\Documents\hobby\game-box\gbCore\libraries\glew-2.0.0\lib\Win32;</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="sources\ces_keyboard_listener_component.cpp" />
+    <ClCompile Include="libraries\box2d\Collision\Shapes\b2CapsuleShape.cpp" />
+    <ClCompile Include="libraries\box2d\Dynamics\Contacts\b2CapsuleAndCircleContact.cpp" />
+    <ClCompile Include="libraries\box2d\Dynamics\Contacts\b2CapsuleContact.cpp" />
+    <ClCompile Include="libraries\box2d\Dynamics\Contacts\b2EdgeAndCapsuleContact.cpp" />
+    <ClCompile Include="libraries\box2d\Dynamics\Contacts\b2LoopAndCapsuleContact.cpp" />
+    <ClCompile Include="libraries\box2d\Dynamics\Contacts\b2PolygonAndCapsuleContact.cpp" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

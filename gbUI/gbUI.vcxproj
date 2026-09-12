@@ -288,6 +288,10 @@
     <ClInclude Include="sources\ui_fabricator.h" />
     <ClInclude Include="sources\ui_scene_graph_extension.h" />
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="sources\color_picker.cpp" />
+    <ClCompile Include="sources\slider.cpp" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
