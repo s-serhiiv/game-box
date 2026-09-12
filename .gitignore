@@ -79,3 +79,4 @@ bin/
 build/
 .vs/
 x64/
+gbWin32SharedResources/

@@ -43,4 +43,15 @@ foreach ($project in $projects) {
 $architectureFolder = if ($Platform -eq "x64") { "x64" } else { "x86" }
 $buildKind = if ($Configuration -eq "debug-client") { "debug" } else { "release" }
 $executable = Join-Path $workspaceRoot "gbDemo\output\$buildKind\$architectureFolder\gb_demo.exe"
+
+$bundleRoot = Join-Path $workspaceRoot "gbBundle"
+$sharedResourcesRoot = Join-Path $workspaceRoot "gbWin32SharedResources"
+$resourceExtensions = @(".xml", ".json", ".vert", ".frag", ".ani", ".png", ".gb3dmesh", ".gb3danim", ".ttf", ".tmx", ".mp3")
+New-Item -ItemType Directory -Path $sharedResourcesRoot -Force | Out-Null
+Get-ChildItem -LiteralPath $bundleRoot -Recurse -File | Where-Object {
+    $resourceExtensions -contains $_.Extension.ToLowerInvariant()
+} | ForEach-Object {
+    Copy-Item -LiteralPath $_.FullName -Destination (Join-Path $sharedResourcesRoot $_.Name) -Force
+}
+
 Write-Host "Build completed: $executable" -ForegroundColor Green

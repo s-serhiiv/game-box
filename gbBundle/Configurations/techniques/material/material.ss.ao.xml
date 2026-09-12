@@ -43,7 +43,7 @@
         filename="ssao_random.png"
         render_operation_name=""
         sampler_index="2"
-        wrap_mode="GL_CLAMP_TO_EDGE"
+        wrap_mode="GL_REPEAT"
         mag_filter="GL_LINEAR"
         min_filter="GL_LINEAR"/>
     </textures>

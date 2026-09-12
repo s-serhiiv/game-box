@@ -9,7 +9,7 @@
         <ws_technique filename="ws.technique.deferred.lighting.xml"/>
     </ws_techniques>
     <ss_techniques>
-        <ss_technique filename="ss.technique.hdr.xml"/>
+        <!-- <ss_technique filename="ss.technique.hdr.xml"/> -->
         <ss_technique filename="ss.technique.gaussian_blur_h.xml"/>
         <ss_technique filename="ss.technique.gaussian_blur_v.xml"/>
         <ss_technique filename="ss.technique.ao.xml"/>
