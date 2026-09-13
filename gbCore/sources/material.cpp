@@ -20,6 +20,7 @@
 #include "vk_initializers.h"
 #include "vk_device.h"
 #include "vk_swap_chain.h"
+#include "vk_render_pass_descriptor.h"
 #include "vk_utils.h"
 
 #if USED_GRAPHICS_API == METAL_API
@@ -1398,6 +1399,10 @@ namespace gb
                         cached_parameters->add_texture(texture, static_cast<e_shader_sampler>(i));
                     }
                 }
+
+#elif USED_GRAPHICS_API == VULKAN_API
+
+				(void)texture;
                 
 #endif
                 
@@ -1532,8 +1537,7 @@ namespace gb
         VkCommandBuffer draw_cmd_buffer = vk_device::get_instance()->get_draw_cmd_buffer(current_image_index);
         
         vkCmdBindPipeline(draw_cmd_buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, m_pipeline);
-        const auto descriptor_set = m_parameters->m_shader->get_descriptor_set();
-        vkCmdBindDescriptorSets(draw_cmd_buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, m_parameters->m_shader->get_pipeline_layout(), 0, 1, &descriptor_set, 0, nullptr);
+        const auto shader = m_parameters->get_shader();
         
 #endif
         
@@ -1560,10 +1564,88 @@ namespace gb
     void material::construct_pipeline(const VkPipelineVertexInputStateCreateInfo& vertex_input_state)
     {
         m_input_assembly_state = vk_initializers::pipeline_input_assembly_state_create_info(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST, 0, VK_FALSE);
-        m_rasterization_state = vk_initializers::pipeline_rasterization_state_create_info(VK_POLYGON_MODE_FILL, VK_CULL_MODE_BACK_BIT, VK_FRONT_FACE_COUNTER_CLOCKWISE, 0);
-        m_color_blend_attachment = vk_initializers::pipeline_color_blend_attachment_state(0xf, VK_FALSE);
-        m_color_blend_state = vk_initializers::pipeline_color_blend_state_create_info(1, &m_color_blend_attachment);
-        m_depth_stencil_state = vk_initializers::pipeline_depth_stencil_state_create_info(VK_TRUE, VK_TRUE, VK_COMPARE_OP_LESS_OR_EQUAL);
+		VkCullModeFlags cull_mode = VK_CULL_MODE_NONE;
+		if (m_parameters->get_is_culling())
+		{
+			cull_mode = m_parameters->get_culling_mode() == gl::constant::front ? VK_CULL_MODE_FRONT_BIT : VK_CULL_MODE_BACK_BIT;
+		}
+		m_rasterization_state = vk_initializers::pipeline_rasterization_state_create_info(VK_POLYGON_MODE_FILL, cull_mode, VK_FRONT_FACE_COUNTER_CLOCKWISE, 0);
+
+		VkColorComponentFlags color_write_mask = 0;
+		color_write_mask |= m_parameters->get_is_color_mask_r() ? VK_COLOR_COMPONENT_R_BIT : 0;
+		color_write_mask |= m_parameters->get_is_color_mask_g() ? VK_COLOR_COMPONENT_G_BIT : 0;
+		color_write_mask |= m_parameters->get_is_color_mask_b() ? VK_COLOR_COMPONENT_B_BIT : 0;
+		color_write_mask |= m_parameters->get_is_color_mask_a() ? VK_COLOR_COMPONENT_A_BIT : 0;
+		auto get_blend_factor = [](ui32 factor) {
+			if (factor == gl::constant::zero) return VK_BLEND_FACTOR_ZERO;
+			if (factor == gl::constant::one) return VK_BLEND_FACTOR_ONE;
+			if (factor == gl::constant::src_alpha) return VK_BLEND_FACTOR_SRC_ALPHA;
+			if (factor == gl::constant::one_minus_src_alpha) return VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;
+			if (factor == gl::constant::one_minus_src_color) return VK_BLEND_FACTOR_ONE_MINUS_SRC_COLOR;
+			if (factor == gl::constant::one_minus_dst_color) return VK_BLEND_FACTOR_ONE_MINUS_DST_COLOR;
+			if (factor == gl::constant::one_minus_dst_alpha) return VK_BLEND_FACTOR_ONE_MINUS_DST_ALPHA;
+			if (factor == gl::constant::dst_alpha) return VK_BLEND_FACTOR_DST_ALPHA;
+			if (factor == gl::constant::constant_alpha) return VK_BLEND_FACTOR_CONSTANT_ALPHA;
+			return VK_BLEND_FACTOR_SRC_COLOR;
+		};
+		auto get_blend_operation = [](ui32 operation) {
+			if (operation == gl::constant::func_min) return VK_BLEND_OP_MIN;
+			if (operation == gl::constant::func_max) return VK_BLEND_OP_MAX;
+			return VK_BLEND_OP_ADD;
+		};
+        const auto color_attachments_count = vk_render_pass_descriptor::get_current_color_attachments_count();
+        assert(color_attachments_count != 0);
+		std::vector<VkPipelineColorBlendAttachmentState> color_blend_attachments(color_attachments_count);
+		const auto& blending_parameters = m_parameters->get_blending_parameters();
+		for (ui32 i = 0; i < color_attachments_count; ++i)
+		{
+			const auto parameters = i < blending_parameters.size() ? blending_parameters.at(i) : blending_parameters.at(0);
+			auto& attachment = color_blend_attachments[i];
+			attachment = vk_initializers::pipeline_color_blend_attachment_state(color_write_mask, parameters->get_is_blending());
+			attachment.srcColorBlendFactor = get_blend_factor(parameters->get_blending_function_source());
+			attachment.dstColorBlendFactor = get_blend_factor(parameters->get_blending_function_destination());
+			attachment.srcAlphaBlendFactor = attachment.srcColorBlendFactor;
+			attachment.dstAlphaBlendFactor = attachment.dstColorBlendFactor;
+			attachment.colorBlendOp = get_blend_operation(parameters->get_blending_equation());
+			attachment.alphaBlendOp = attachment.colorBlendOp;
+		}
+        m_color_blend_state = vk_initializers::pipeline_color_blend_state_create_info(color_attachments_count, color_blend_attachments.data());
+		m_depth_stencil_state = vk_initializers::pipeline_depth_stencil_state_create_info(m_parameters->get_is_depth_test(), m_parameters->get_is_depth_mask(), VK_COMPARE_OP_LESS_OR_EQUAL);
+		if (m_parameters->get_is_stencil_test())
+		{
+			auto get_compare_operation = [](ui32 operation) {
+				if (operation == gl::constant::equal) return VK_COMPARE_OP_EQUAL;
+				if (operation == gl::constant::notequal) return VK_COMPARE_OP_NOT_EQUAL;
+				if (operation == gl::constant::less) return VK_COMPARE_OP_LESS;
+				if (operation == gl::constant::less_equal || operation == gl::constant::lequal) return VK_COMPARE_OP_LESS_OR_EQUAL;
+				return VK_COMPARE_OP_ALWAYS;
+			};
+			auto get_stencil_operation = [](ui32 operation) {
+				if (operation == gl::constant::stencil_op_zero) return VK_STENCIL_OP_ZERO;
+				if (operation == gl::constant::stencil_op_replace) return VK_STENCIL_OP_REPLACE;
+				if (operation == gl::constant::stencil_op_inc_clamp) return VK_STENCIL_OP_INCREMENT_AND_CLAMP;
+				if (operation == gl::constant::stencil_op_dec_clamp) return VK_STENCIL_OP_DECREMENT_AND_CLAMP;
+				if (operation == gl::constant::stencil_op_inv) return VK_STENCIL_OP_INVERT;
+				if (operation == gl::constant::stencil_op_inc_wrap) return VK_STENCIL_OP_INCREMENT_AND_WRAP;
+				if (operation == gl::constant::stencil_op_dec_wrap) return VK_STENCIL_OP_DECREMENT_AND_WRAP;
+				return VK_STENCIL_OP_KEEP;
+			};
+			m_depth_stencil_state.stencilTestEnable = VK_TRUE;
+			m_depth_stencil_state.front.compareOp = get_compare_operation(m_parameters->get_stencil_function());
+			m_depth_stencil_state.front.failOp = get_stencil_operation(m_parameters->get_front_stencil_op_1());
+			m_depth_stencil_state.front.depthFailOp = get_stencil_operation(m_parameters->get_front_stencil_op_2());
+			m_depth_stencil_state.front.passOp = get_stencil_operation(m_parameters->get_front_stencil_op_3());
+			m_depth_stencil_state.front.compareMask = m_parameters->get_stencil_mask_read();
+			m_depth_stencil_state.front.writeMask = m_parameters->get_stencil_mask_write();
+			m_depth_stencil_state.front.reference = m_parameters->get_stencil_ref_value();
+			m_depth_stencil_state.back.compareOp = get_compare_operation(m_parameters->get_stencil_function());
+			m_depth_stencil_state.back.failOp = get_stencil_operation(m_parameters->get_back_stencil_op_1());
+			m_depth_stencil_state.back.depthFailOp = get_stencil_operation(m_parameters->get_back_stencil_op_2());
+			m_depth_stencil_state.back.passOp = get_stencil_operation(m_parameters->get_back_stencil_op_3());
+			m_depth_stencil_state.back.compareMask = m_parameters->get_stencil_mask_read();
+			m_depth_stencil_state.back.writeMask = m_parameters->get_stencil_mask_write();
+			m_depth_stencil_state.back.reference = m_parameters->get_stencil_ref_value();
+		}
         
         VkViewport viewport = vk_initializers::viewport(vk_swap_chain::get_instance()->get_swap_chain_extent().width, vk_swap_chain::get_instance()->get_swap_chain_extent().height, 0.f, 1.f);
         VkRect2D scissor = {};
@@ -1572,13 +1654,21 @@ namespace gb
         
         m_viewport_state = vk_initializers::pipeline_viewport_state_create_info(1, 1, 0);
         m_viewport_state.pViewports = &viewport;
-        m_viewport_state.pScissors = &scissor;
+		m_viewport_state.pScissors = &scissor;
+		m_dynamic_states = { VK_DYNAMIC_STATE_VIEWPORT, VK_DYNAMIC_STATE_SCISSOR };
+		m_dynamic_state = {};
+		m_dynamic_state.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
+		m_dynamic_state.pDynamicStates = m_dynamic_states.data();
+		m_dynamic_state.dynamicStateCount = static_cast<ui32>(m_dynamic_states.size());
         
         m_multisampling_state = vk_initializers::pipeline_multisample_state_create_info(VK_SAMPLE_COUNT_1_BIT, 0);
         
-        VkPipelineShaderStageCreateInfo shader_stages[] = { m_parameters->m_shader->get_vs_shader_stage(), m_parameters->m_shader->get_fs_shader_stage() };
+        const auto shader = m_parameters->get_shader();
+        VkPipelineShaderStageCreateInfo shader_stages[] = { shader->get_vs_shader_stage(), shader->get_fs_shader_stage() };
         
-        m_graphics_pipeline = vk_initializers::pipeline_create_info(m_parameters->m_shader->get_pipeline_layout(), vk_swap_chain::get_instance()->get_render_pass(), 0);
+        const auto render_pass = vk_render_pass_descriptor::get_current_render_pass();
+        assert(render_pass != VK_NULL_HANDLE);
+        m_graphics_pipeline = vk_initializers::pipeline_create_info(shader->get_pipeline_layout(), render_pass, 0);
         m_graphics_pipeline.stageCount = 2;
         m_graphics_pipeline.pStages = shader_stages;
         m_graphics_pipeline.pVertexInputState = &vertex_input_state;
@@ -1588,6 +1678,7 @@ namespace gb
         m_graphics_pipeline.pMultisampleState = &m_multisampling_state;
         m_graphics_pipeline.pColorBlendState = &m_color_blend_state;
         m_graphics_pipeline.pDepthStencilState = &m_depth_stencil_state;
+		m_graphics_pipeline.pDynamicState = &m_dynamic_state;
         m_graphics_pipeline.subpass = 0;
         m_graphics_pipeline.basePipelineHandle = VK_NULL_HANDLE;
         

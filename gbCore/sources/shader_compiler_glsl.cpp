@@ -11,8 +11,91 @@
 #include "vk_device.h"
 #include "vk_initializers.h"
 
+#if USED_GRAPHICS_API == VULKAN_API
+
+#include <regex>
+
+#endif
+
 namespace gb
 {
+#if USED_GRAPHICS_API == VULKAN_API
+
+	std::string shader_compiler_glsl::convert_to_vulkan_source(const std::string& source_code, ui32 binding, std::vector<shader_custom_uniform_desc>* uniforms)
+	{
+		const std::regex uniform_expression("(?:^|\\r?\\n)[ \\t]*uniform[ \\t]+(mat4|mat3|vec4|vec3|vec2|float|int)[ \\t]+([A-Za-z_][A-Za-z0-9_]*)(?:[ \\t]*\\[[ \\t]*(\\d+)[ \\t]*\\])?[ \\t]*;[ \\t]*(?=\\r?\\n|$)");
+		std::vector<shader_custom_uniform_desc> descriptions;
+		std::string uniform_block;
+		ui32 offset = 0;
+
+		for(auto iterator = std::sregex_iterator(source_code.begin(), source_code.end(), uniform_expression); iterator != std::sregex_iterator(); ++iterator)
+		{
+			shader_custom_uniform_desc description;
+			description.m_type = (*iterator)[1].str();
+			description.m_name = (*iterator)[2].str();
+			description.m_array_size = (*iterator)[3].matched ? std::stoi((*iterator)[3].str()) : 1;
+
+			ui32 alignment = 4;
+			if(description.m_type == "vec2")
+			{
+				alignment = 8;
+				description.m_element_size = 8;
+			}
+			else if(description.m_type == "vec3" || description.m_type == "vec4")
+			{
+				alignment = 16;
+				description.m_element_size = description.m_type == "vec3" ? 12 : 16;
+			}
+			else if(description.m_type == "mat3" || description.m_type == "mat4")
+			{
+				alignment = 16;
+				description.m_element_size = description.m_type == "mat3" ? 48 : 64;
+			}
+			else
+			{
+				description.m_element_size = 4;
+			}
+
+			if(description.m_array_size > 1)
+			{
+				alignment = 16;
+				description.m_stride = (description.m_element_size + 15) & ~15;
+			}
+			else
+			{
+				description.m_stride = description.m_element_size;
+			}
+
+			offset = (offset + alignment - 1) & ~(alignment - 1);
+			description.m_offset = offset;
+			offset += description.m_stride * description.m_array_size;
+			descriptions.push_back(description);
+
+			uniform_block.append("    ").append(description.m_type).append(" ").append(description.m_name);
+			if(description.m_array_size > 1)
+			{
+				uniform_block.append("[").append(std::to_string(description.m_array_size)).append("]");
+			}
+			uniform_block.append(";\n");
+		}
+
+		if(uniforms)
+		{
+			*uniforms = descriptions;
+		}
+		if(descriptions.empty())
+		{
+			return source_code;
+		}
+
+		std::string result = std::regex_replace(source_code, uniform_expression, "");
+		std::string block = "layout(std140, binding = ";
+		block.append(std::to_string(binding)).append(") uniform gb_custom_uniforms\n{\n").append(uniform_block).append("};\n");
+		return block.append(result);
+	}
+
+#endif
+
     std::string shader_compiler_glsl::m_vs_shader_header =
 "#if defined(__IOS__) || defined(__TVOS__)\n\
     #extension GL_APPLE_clip_distance : require\n\
@@ -41,10 +124,12 @@ namespace gb
         layout(binding = 0) uniform u_mat_m_struct { mat4 matrix; } u_mat_m;\n\
         layout(binding = 1) uniform u_mat_p_struct { mat4 matrix; } u_mat_p;\n\
         layout(binding = 2) uniform u_mat_v_struct { mat4 matrix; } u_mat_v;\n\
+        layout(binding = 13) uniform u_mat_n_struct { mat4 matrix; } u_mat_n;\n\
     #else\n\
         uniform mat4 u_mat_m;\n\
         uniform mat4 u_mat_p;\n\
         uniform mat4 u_mat_v;\n\
+        uniform mat4 u_mat_n;\n\
     #endif\n\
 #else\n\
     attribute vec3 a_position;\n\
@@ -66,6 +151,7 @@ namespace gb
     uniform mat4 u_mat_m;\n\
     uniform mat4 u_mat_p;\n\
     uniform mat4 u_mat_v;\n\
+    uniform mat4 u_mat_n;\n\
 #endif\n\
 mat4 get_mat_m(){\n\
 #if defined(VULKAN_API)\n\
@@ -86,6 +172,13 @@ mat4 get_mat_p(){\n\
     return u_mat_p.matrix;\n\
 #else\n\
     return u_mat_p;\n\
+#endif\n\
+}\n\
+mat4 get_mat_n(){\n\
+#if defined(VULKAN_API)\n\
+    return u_mat_n.matrix;\n\
+#else\n\
+    return u_mat_n;\n\
 #endif\n\
 }\n\
 mat4 get_mat_mvp(){\n\
@@ -115,14 +208,29 @@ return get_mat_mvp() * vec4(a_position, 1.0); \n\
     layout(location = 8) in mat3 v_mat_tbn;\n\
     \n\
     #if defined(USE_BINDINGS)\n\
-        layout(binding = 0) uniform sampler2D sampler_01;\n\
-        layout(binding = 1) uniform sampler2D sampler_02;\n\
-        layout(binding = 2) uniform sampler2D sampler_03;\n\
-        layout(binding = 3) uniform sampler2D sampler_04;\n\
-        layout(binding = 4) uniform sampler2D sampler_05;\n\
-        layout(binding = 5) uniform sampler2D sampler_06;\n\
-        layout(binding = 6) uniform sampler2D sampler_07;\n\
-        layout(binding = 7) uniform sampler2D sampler_08;\n\
+        #if defined(VULKAN_API)\n\
+            layout(binding = 3) uniform sampler2D sampler_01;\n\
+            #if defined(GB_SAMPLER_02_CUBE)\n\
+                layout(binding = 4) uniform samplerCube sampler_02;\n\
+            #else\n\
+                layout(binding = 4) uniform sampler2D sampler_02;\n\
+            #endif\n\
+            layout(binding = 5) uniform sampler2D sampler_03;\n\
+            layout(binding = 6) uniform sampler2D sampler_04;\n\
+            layout(binding = 7) uniform sampler2D sampler_05;\n\
+            layout(binding = 8) uniform sampler2D sampler_06;\n\
+            layout(binding = 9) uniform sampler2D sampler_07;\n\
+            layout(binding = 10) uniform sampler2D sampler_08;\n\
+        #else\n\
+            layout(binding = 0) uniform sampler2D sampler_01;\n\
+            layout(binding = 1) uniform sampler2D sampler_02;\n\
+            layout(binding = 2) uniform sampler2D sampler_03;\n\
+            layout(binding = 3) uniform sampler2D sampler_04;\n\
+            layout(binding = 4) uniform sampler2D sampler_05;\n\
+            layout(binding = 5) uniform sampler2D sampler_06;\n\
+            layout(binding = 6) uniform sampler2D sampler_07;\n\
+            layout(binding = 7) uniform sampler2D sampler_08;\n\
+        #endif\n\
     #else\n\
         uniform sampler2D sampler_01;\n\
         uniform sampler2D sampler_02;\n\
@@ -229,7 +337,14 @@ return get_mat_mvp() * vec4(a_position, 1.0); \n\
 
 #if USED_GRAPHICS_API == VULKAN_API
 
+		define.append("#version 450\n");
 		define.append("#define VULKAN_API\n");
+		define.append("#define USE_LAYOUTS\n");
+		define.append("#define USE_BINDINGS\n");
+		if (source_code.find("GB_SAMPLER_02_CUBE") != std::string::npos)
+		{
+			define.append("#define GB_SAMPLER_02_CUBE\n");
+		}
 
 #endif
         
@@ -268,7 +383,7 @@ return get_mat_mvp() * vec4(a_position, 1.0); \n\
 #elif USED_GRAPHICS_API == VULKAN_API
 
 		std::string source_code_spv = define;
-		source_code_spv.append(source_code);
+		source_code_spv.append(shader_compiler_glsl::convert_to_vulkan_source(source_code, shader_type == gl::constant::vertex_shader ? 11 : 12));
 
 		shaderc::Compiler compiler;
 		shaderc::SpvCompilationResult module = compiler.CompileGlslToSpv(source_code_spv.c_str(), source_code_spv.length(), shader_type == gl::constant::vertex_shader ? shaderc_glsl_vertex_shader : shaderc_glsl_fragment_shader, "shader");
@@ -311,6 +426,10 @@ return get_mat_mvp() * vec4(a_position, 1.0); \n\
 				handle.stage = shader_type == gl::constant::vertex_shader ? VK_SHADER_STAGE_VERTEX_BIT : VK_SHADER_STAGE_FRAGMENT_BIT;
 				handle.module = shader_module;
 				handle.pName = "main";
+				if (out_success)
+				{
+					*out_success = true;
+				}
 			}
 		}
 

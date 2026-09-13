@@ -29,6 +29,7 @@
 #include "scene_graph.h"
 #include "scene_fabricator.h"
 #include "window_impl.h"
+#include "attachment_configuration.h"
 
 namespace gb
 {
@@ -93,8 +94,8 @@ namespace gb
                                                    render_technique_ws->get_color_attachment_texture());
             resource_accessor->add_custom_resource(ws_technique_configuration->get_guid() + ".depth",
                                                    render_technique_ws->get_depth_attachment_texture());
-            
-#if USED_GRAPHICS_API == METAL_API
+
+#if USED_GRAPHICS_API == METAL_API || USED_GRAPHICS_API == VULKAN_API
             
             const auto color_attachments_texture = render_technique_ws->get_color_attachments_texture();
             for (auto color_attachment_texture_it : color_attachments_texture)
@@ -131,8 +132,8 @@ namespace gb
             
             resource_accessor->add_custom_resource(ss_technique_configuration->get_guid() + ".color",
                                                    render_technique_ss->get_color_attachment_texture());
-            
-#if USED_GRAPHICS_API == METAL_API
+
+#if USED_GRAPHICS_API == METAL_API || USED_GRAPHICS_API == VULKAN_API
             
             const auto color_attachments_texture = render_technique_ss->get_color_attachments_texture();
             for (auto color_attachment_texture_it : color_attachments_texture)

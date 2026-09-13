@@ -101,7 +101,7 @@ namespace gb
 
 #if USED_GRAPHICS_API == VULKAN_API
 
-		m_attributes_description.resize(3);
+		m_attributes_description.resize(6);
 
 		m_attributes_description[0].binding = 0;
 		m_attributes_description[0].location = m_attributes_locations["m_position"];
@@ -110,13 +110,28 @@ namespace gb
 
 		m_attributes_description[1].binding = 0;
 		m_attributes_description[1].location = m_attributes_locations["m_texcoord"];
-		m_attributes_description[1].format = VK_FORMAT_R16G16_UNORM;
+		m_attributes_description[1].format = VK_FORMAT_R32G32_SFLOAT;
 		m_attributes_description[1].offset = offsetof(vertex_attribute_PTC, m_texcoord);
 
 		m_attributes_description[2].binding = 0;
 		m_attributes_description[2].location = m_attributes_locations["m_color"];;
 		m_attributes_description[2].format = VK_FORMAT_B8G8R8A8_UNORM;
 		m_attributes_description[2].offset = offsetof(vertex_attribute_PTC, m_color);
+
+		m_attributes_description[3].binding = 0;
+		m_attributes_description[3].location = m_attributes_locations["m_normal"];
+		m_attributes_description[3].format = VK_FORMAT_R8G8B8A8_UNORM;
+		m_attributes_description[3].offset = offsetof(vertex_attribute_PTC, m_unused);
+
+		m_attributes_description[4].binding = 0;
+		m_attributes_description[4].location = m_attributes_locations["m_tangent"];
+		m_attributes_description[4].format = VK_FORMAT_R8G8B8A8_UNORM;
+		m_attributes_description[4].offset = offsetof(vertex_attribute_PTC, m_unused) + 4;
+
+		m_attributes_description[5].binding = 0;
+		m_attributes_description[5].location = m_attributes_locations["m_extra"];
+		m_attributes_description[5].format = VK_FORMAT_R8G8B8A8_UNORM;
+		m_attributes_description[5].offset = offsetof(vertex_attribute_PTC, m_unused);
 
 		m_vertex_input_state = vk_initializers::pipeline_vertex_input_state_create_info();
 		m_vertex_input_state.vertexBindingDescriptionCount = m_bindings_description.size();
@@ -186,7 +201,7 @@ namespace gb
 
 #if USED_GRAPHICS_API == VULKAN_API
 
-		m_attributes_description.resize(4);
+		m_attributes_description.resize(6);
 
 		m_attributes_description[0].binding = 0;
 		m_attributes_description[0].location = m_attributes_locations["m_position"];
@@ -199,14 +214,24 @@ namespace gb
 		m_attributes_description[1].offset = offsetof(vertex_attribute_PT4B, m_texcoord);
 
 		m_attributes_description[2].binding = 0;
-		m_attributes_description[2].location = m_attributes_locations["m_normal"];;
-		m_attributes_description[2].format = VK_FORMAT_R8G8B8A8_UNORM;
+		m_attributes_description[2].location = m_attributes_locations["m_extra"];
+		m_attributes_description[2].format = VK_FORMAT_R8G8B8A8_USCALED;
 		m_attributes_description[2].offset = offsetof(vertex_attribute_PT4B, m_bone_ids);
 
 		m_attributes_description[3].binding = 0;
-		m_attributes_description[3].location = m_attributes_locations["m_tangent"];
+		m_attributes_description[3].location = m_attributes_locations["m_color"];
 		m_attributes_description[3].format = VK_FORMAT_R8G8B8A8_USCALED;
 		m_attributes_description[3].offset = offsetof(vertex_attribute_PT4B, m_bone_weights);
+
+		m_attributes_description[4].binding = 0;
+		m_attributes_description[4].location = m_attributes_locations["m_normal"];
+		m_attributes_description[4].format = VK_FORMAT_R8G8B8A8_UNORM;
+		m_attributes_description[4].offset = offsetof(vertex_attribute_PT4B, m_unused);
+
+		m_attributes_description[5].binding = 0;
+		m_attributes_description[5].location = m_attributes_locations["m_tangent"];
+		m_attributes_description[5].format = VK_FORMAT_R8G8B8A8_UNORM;
+		m_attributes_description[5].offset = offsetof(vertex_attribute_PT4B, m_unused) + 4;
 
 		m_vertex_input_state = vk_initializers::pipeline_vertex_input_state_create_info();
 		m_vertex_input_state.vertexBindingDescriptionCount = m_bindings_description.size();
@@ -281,7 +306,7 @@ namespace gb
 
 #if USED_GRAPHICS_API == VULKAN_API
 
-		m_attributes_description.resize(5);
+		m_attributes_description.resize(6);
 
 		m_attributes_description[0].binding = 0;
 		m_attributes_description[0].location = m_attributes_locations["m_position"];
@@ -295,18 +320,23 @@ namespace gb
 
 		m_attributes_description[2].binding = 0;
 		m_attributes_description[2].location = m_attributes_locations["m_normal"];;
-		m_attributes_description[2].format = VK_FORMAT_R8G8B8A8_UNORM;
+		m_attributes_description[2].format = VK_FORMAT_R8G8B8A8_SNORM;
 		m_attributes_description[2].offset = offsetof(vertex_attribute_PTNTC, m_normal);
 
 		m_attributes_description[3].binding = 0;
 		m_attributes_description[3].location = m_attributes_locations["m_tangent"];
-		m_attributes_description[3].format = VK_FORMAT_R8G8B8A8_UNORM;
+		m_attributes_description[3].format = VK_FORMAT_R8G8B8A8_SNORM;
 		m_attributes_description[3].offset = offsetof(vertex_attribute_PTNTC, m_tangent);
 
 		m_attributes_description[4].binding = 0;
 		m_attributes_description[4].location = m_attributes_locations["m_color"];
 		m_attributes_description[4].format = VK_FORMAT_R8G8B8A8_UNORM;
 		m_attributes_description[4].offset = offsetof(vertex_attribute_PTNTC, m_color);
+
+		m_attributes_description[5].binding = 0;
+		m_attributes_description[5].location = m_attributes_locations["m_extra"];
+		m_attributes_description[5].format = VK_FORMAT_R8G8B8A8_UNORM;
+		m_attributes_description[5].offset = offsetof(vertex_attribute_PTNTC, m_unused);
 
 		m_vertex_input_state = vk_initializers::pipeline_vertex_input_state_create_info();
 		m_vertex_input_state.vertexBindingDescriptionCount = m_bindings_description.size();

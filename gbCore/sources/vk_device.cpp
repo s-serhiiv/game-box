@@ -41,15 +41,19 @@ namespace gb
 		VkPhysicalDeviceProperties device_properties;
 		VkPhysicalDeviceFeatures device_features;
 
-		for (const auto& device : devices) {
+		for (const auto& device : devices)
+		{
 			vkGetPhysicalDeviceProperties(device, &device_properties);
 			vkGetPhysicalDeviceFeatures(device, &device_features);
 
-			if (device_properties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU && device_features.geometryShader) {
+			m_physical_device = device;
+			if (device_properties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU)
+			{
 				m_physical_device = device;
 				break;
 			}
 		}
+		assert(m_physical_device != VK_NULL_HANDLE);
 		vkGetPhysicalDeviceMemoryProperties(m_physical_device, &m_memory_properties);
 
 		vk_queue_family queue_family = get_queue_family();
@@ -122,6 +126,7 @@ namespace gb
 
 	void vk_device::create_frame_buffers(const std::shared_ptr<window_impl>& window)
 	{
+		const auto resolution = window->get_resolution_size_in_pixels();
 		VkFormat depth_format;
 		VkBool32 valid_depth_format = vk_device::get_supported_depth_format(&depth_format);
 		assert(valid_depth_format);
@@ -131,7 +136,7 @@ namespace gb
 		image.pNext = NULL;
 		image.imageType = VK_IMAGE_TYPE_2D;
 		image.format = depth_format;
-		image.extent = { window->get_width(), window->get_height(), 1 };
+		image.extent = { static_cast<ui32>(resolution.x), static_cast<ui32>(resolution.y), 1 };
 		image.mipLevels = 1;
 		image.arrayLayers = 1;
 		image.samples = VK_SAMPLE_COUNT_1_BIT;
@@ -152,7 +157,11 @@ namespace gb
 		depth_stencil_view.format = depth_format;
 		depth_stencil_view.flags = 0;
 		depth_stencil_view.subresourceRange = {};
-		depth_stencil_view.subresourceRange.aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT | VK_IMAGE_ASPECT_STENCIL_BIT;
+		depth_stencil_view.subresourceRange.aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT;
+		if (depth_format == VK_FORMAT_D16_UNORM_S8_UINT || depth_format == VK_FORMAT_D24_UNORM_S8_UINT || depth_format == VK_FORMAT_D32_SFLOAT_S8_UINT)
+		{
+			depth_stencil_view.subresourceRange.aspectMask |= VK_IMAGE_ASPECT_STENCIL_BIT;
+		}
 		depth_stencil_view.subresourceRange.baseMipLevel = 0;
 		depth_stencil_view.subresourceRange.levelCount = 1;
 		depth_stencil_view.subresourceRange.baseArrayLayer = 0;
@@ -183,8 +192,8 @@ namespace gb
 		frame_buffer_create_info.renderPass = vk_swap_chain::get_instance()->get_render_pass();
 		frame_buffer_create_info.attachmentCount = 2;
 		frame_buffer_create_info.pAttachments = attachments;
-		frame_buffer_create_info.width = window->get_width();
-		frame_buffer_create_info.height = window->get_height();
+		frame_buffer_create_info.width = static_cast<ui32>(resolution.x);
+		frame_buffer_create_info.height = static_cast<ui32>(resolution.y);
 		frame_buffer_create_info.layers = 1;
 
 		ui32 images_count = vk_swap_chain::get_instance()->get_images_count();
@@ -261,6 +270,7 @@ namespace gb
 	{
 		VkFenceCreateInfo fence_create_info = vk_initializers::fence_create_info(VK_FENCE_CREATE_SIGNALED_BIT);
 		m_wait_fences.resize(m_draw_cmd_buffers.size());
+		m_frame_numbers.resize(m_draw_cmd_buffers.size(), 0);
 		for (auto& fence : m_wait_fences)
 		{
 
@@ -359,10 +369,6 @@ namespace gb
 			break;
 
 		case VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL:
-			if (image_memory_barrier.srcAccessMask == 0)
-			{
-				image_memory_barrier.srcAccessMask = VK_ACCESS_HOST_WRITE_BIT | VK_ACCESS_TRANSFER_WRITE_BIT;
-			}
 			image_memory_barrier.dstAccessMask = VK_ACCESS_SHADER_READ_BIT;
 			break;
 		default:
@@ -489,6 +495,16 @@ namespace gb
 	void vk_device::set_current_image_index(ui32 image_index)
 	{
 		m_current_image_index = image_index;
+	}
+
+	ui64 vk_device::get_frame_number(ui32 image_index) const
+	{
+		return m_frame_numbers.at(image_index);
+	}
+
+	void vk_device::begin_frame(ui32 image_index)
+	{
+		m_frame_numbers.at(image_index)++;
 	}
 }
 

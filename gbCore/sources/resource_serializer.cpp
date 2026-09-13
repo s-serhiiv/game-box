@@ -31,6 +31,7 @@ namespace gb
             if (!filestream->is_open())
             {
                 *status = e_serializer_status_failure;
+				std::cerr << "missing resource: " << filename << std::endl;
                 assert(false);
             }
         }

@@ -14,10 +14,9 @@
 #include "mesh_2d.h"
 #include "material.h"
 
-#if USED_GRAPHICS_API == METAL_API
+#if USED_GRAPHICS_API == METAL_API || USED_GRAPHICS_API == VULKAN_API
 
-#include "mtl_device.h"
-#include "mtl_render_pass_descriptor.h"
+#include "render_pass_descriptor.h"
 
 #endif
 
@@ -143,9 +142,18 @@ namespace gb
         render_technique->m_color_attachment_texture->set_wrap_mode(gl::constant::clamp_to_edge);
         render_technique->m_depth_attachment_texture->set_wrap_mode(gl::constant::clamp_to_edge);
         
-#if USED_GRAPHICS_API == METAL_API
+#if USED_GRAPHICS_API == METAL_API || USED_GRAPHICS_API == VULKAN_API
         
-        render_technique->m_render_pass_descriptor = mtl_render_pass_descriptor::construct_ws_render_pass_descriptor(configuration);
+        render_technique->m_render_pass_descriptor = render_pass_descriptor::construct_ws_render_pass_descriptor(configuration);
+        const auto color_attachments_texture = render_technique->m_render_pass_descriptor->get_color_attachments_texture();
+        assert(!color_attachments_texture.empty());
+        render_technique->m_color_attachment_texture = color_attachments_texture.at(0);
+
+#if USED_GRAPHICS_API == VULKAN_API
+
+        render_technique->m_depth_attachment_texture = render_technique->m_render_pass_descriptor->get_depth_attachment_texture();
+
+#endif
         
 #endif
         
@@ -172,7 +180,7 @@ namespace gb
     void render_technique_ws::bind()
     {
         
-#if USED_GRAPHICS_API == METAL_API
+#if USED_GRAPHICS_API == METAL_API || USED_GRAPHICS_API == VULKAN_API
         
         m_render_pass_descriptor->bind();
         
@@ -198,7 +206,7 @@ namespace gb
     {
         gl::command::bind_frame_buffer(gl::constant::frame_buffer, NULL);
         
-#if USED_GRAPHICS_API == METAL_API
+#if USED_GRAPHICS_API == METAL_API || USED_GRAPHICS_API == VULKAN_API
         
         m_render_pass_descriptor->unbind();
         

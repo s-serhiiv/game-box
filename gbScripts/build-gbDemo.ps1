@@ -8,6 +8,13 @@ param(
 $ErrorActionPreference = "Stop"
 $workspaceRoot = Split-Path -Parent $PSScriptRoot
 $vswhere = Join-Path ${env:ProgramFiles(x86)} "Microsoft Visual Studio\Installer\vswhere.exe"
+$vulkanSdk = [Environment]::GetEnvironmentVariable("VULKAN_SDK", "Machine")
+
+if (-not $vulkanSdk -or -not (Test-Path -LiteralPath $vulkanSdk)) {
+    throw "Vulkan SDK was not found. Install it from https://vulkan.lunarg.com/."
+}
+
+$env:VULKAN_SDK = $vulkanSdk
 
 if (-not (Test-Path -LiteralPath $vswhere)) {
     throw "Visual Studio Installer (vswhere.exe) was not found. Install Visual Studio 2022 with Desktop development with C++."
@@ -43,10 +50,17 @@ foreach ($project in $projects) {
 $architectureFolder = if ($Platform -eq "x64") { "x64" } else { "x86" }
 $buildKind = if ($Configuration -eq "debug-client") { "debug" } else { "release" }
 $executable = Join-Path $workspaceRoot "gbDemo\output\$buildKind\$architectureFolder\gb_demo.exe"
+$outputRoot = Split-Path -Parent $executable
+$shadercLibrary = Join-Path $vulkanSdk "Bin\shaderc_shared.dll"
+$shadercOutputLibrary = Join-Path $outputRoot "shaderc_shared.dll"
+if (-not (Test-Path -LiteralPath $shadercOutputLibrary) -or
+    (Get-FileHash -LiteralPath $shadercLibrary).Hash -ne (Get-FileHash -LiteralPath $shadercOutputLibrary).Hash) {
+    Copy-Item -LiteralPath $shadercLibrary -Destination $outputRoot -Force
+}
 
 $bundleRoot = Join-Path $workspaceRoot "gbBundle"
 $sharedResourcesRoot = Join-Path $workspaceRoot "gbWin32SharedResources"
-$resourceExtensions = @(".xml", ".json", ".vert", ".frag", ".ani", ".png", ".gb3dmesh", ".gb3danim", ".ttf", ".tmx", ".mp3")
+$resourceExtensions = @(".xml", ".json", ".vert", ".frag", ".ani", ".png", ".gb3dmesh", ".gb3danim", ".ttf", ".otf", ".tmx", ".tsx", ".mp3", ".fcl")
 New-Item -ItemType Directory -Path $sharedResourcesRoot -Force | Out-Null
 Get-ChildItem -LiteralPath $bundleRoot -Recurse -File | Where-Object {
     $resourceExtensions -contains $_.Extension.ToLowerInvariant()

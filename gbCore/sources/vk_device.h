@@ -58,6 +58,7 @@ namespace gb
 		std::vector<VkFence> m_wait_fences;
 
 		ui32 m_current_image_index = 0;
+		std::vector<ui64> m_frame_numbers;
 
 	protected:
 
@@ -105,6 +106,8 @@ namespace gb
 
 		ui32 get_current_image_index() const;
 		void set_current_image_index(ui32 image_index);
+		ui64 get_frame_number(ui32 image_index) const;
+		void begin_frame(ui32 image_index);
 	};
 };
 

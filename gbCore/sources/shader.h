@@ -12,6 +12,7 @@
 #include "resource.h"
 #include "vk_uniform_value_buffer.h"
 #include "vk_uniform_sampler_buffer.h"
+#include "shader_compiler_glsl.h"
 
 namespace gb
 {
@@ -117,12 +118,6 @@ namespace gb
         e_shader_sampler m_sampler_value;
         texture_shared_ptr m_texture_value;
 
-#if USED_GRAPHICS_API == VULKAN_API
-
-		std::shared_ptr<vk_uniform_value_buffer> m_vk_buffer = nullptr;
-
-#endif
-
     protected:
         
     public:
@@ -167,6 +162,7 @@ namespace gb
         texture_shared_ptr get_texture() const;
         
         ui32 get_array_size() const;
+
     };
     
     struct shader_transfering_data : public resource_transfering_data
@@ -198,14 +194,24 @@ namespace gb
 
 #if USED_GRAPHICS_API == VULKAN_API
 
-		VkDescriptorSetLayout m_vk_descriptor_set_layout;
-		VkDescriptorPool m_vk_descriptor_pool;
+		VkDescriptorSetLayout m_vk_descriptor_set_layout = VK_NULL_HANDLE;
 
-		VkPipelineShaderStageCreateInfo m_vs_shader_stage;
-		VkPipelineShaderStageCreateInfo m_fs_shader_stage;
+		VkPipelineShaderStageCreateInfo m_vs_shader_stage = {};
+		VkPipelineShaderStageCreateInfo m_fs_shader_stage = {};
 
 		VkPipelineLayout m_pipeline_layout = VK_NULL_HANDLE;
-		VkDescriptorSet m_descriptor_set = VK_NULL_HANDLE;
+
+		std::string m_vs_source_code;
+		std::string m_fs_source_code;
+		std::vector<shader_custom_uniform_desc> m_vk_vs_custom_uniforms;
+		std::vector<shader_custom_uniform_desc> m_vk_fs_custom_uniforms;
+		std::vector<ui8> m_vk_vs_custom_uniforms_data;
+		std::vector<ui8> m_vk_fs_custom_uniforms_data;
+		texture_shared_ptr m_vk_fallback_texture = nullptr;
+		std::vector<VkDescriptorPool> m_vk_frame_descriptor_pools;
+		std::vector<ui64> m_vk_frame_numbers;
+		std::vector<std::shared_ptr<vk_buffer>> m_vk_frame_uniform_buffers;
+		std::vector<VkDeviceSize> m_vk_frame_uniform_buffer_offsets;
 
 #endif
         
@@ -225,6 +231,12 @@ namespace gb
         
         void setup_uniforms();
         i32 get_custom_uniform(const std::string& uniform);
+
+#if USED_GRAPHICS_API == VULKAN_API
+
+		void set_vk_custom_uniform(const std::string& uniform, const void* data, ui32 elements_count = 1);
+
+#endif
         
     public:
         
@@ -276,7 +288,8 @@ namespace gb
 		std::vector<VkPipelineShaderStageCreateInfo> get_shader_stages() const;
 
 		VkPipelineLayout get_pipeline_layout() const;
-		VkDescriptorSet get_descriptor_set() const;
+		VkDescriptorSet construct_descriptor_set();
+		static void bind_vulkan_descriptor_set();
 
 #endif
 

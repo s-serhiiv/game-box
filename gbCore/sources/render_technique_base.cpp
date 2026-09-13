@@ -8,9 +8,9 @@
 
 #include "render_technique_base.h"
 
-#if USED_GRAPHICS_API == METAL_API
+#if USED_GRAPHICS_API == METAL_API || USED_GRAPHICS_API == VULKAN_API
 
-#include "mtl_render_pass_descriptor.h"
+#include "render_pass_descriptor.h"
 
 #endif
 
@@ -91,7 +91,7 @@ namespace gb
         m_uniforms[uniforms->get_type()] = uniforms;
     }
     
-#if USED_GRAPHICS_API == METAL_API
+#if USED_GRAPHICS_API == METAL_API || USED_GRAPHICS_API == VULKAN_API
     
     std::vector<texture_shared_ptr> render_technique_base::get_color_attachments_texture()
     {

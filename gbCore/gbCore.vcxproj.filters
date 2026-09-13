@@ -792,6 +792,9 @@
     <ClInclude Include="sources\render_pipeline.h">
       <Filter>sources\render managment</Filter>
     </ClInclude>
+    <ClInclude Include="sources\render_pass_descriptor.h">
+      <Filter>sources\render managment</Filter>
+    </ClInclude>
     <ClInclude Include="sources\render_target.h">
       <Filter>sources\render managment</Filter>
     </ClInclude>
@@ -1761,6 +1764,9 @@
     <ClInclude Include="sources\vk_swap_chain.h">
       <Filter>sources\render managment\vk</Filter>
     </ClInclude>
+    <ClInclude Include="sources\vk_render_pass_descriptor.h">
+      <Filter>sources\render managment\vk</Filter>
+    </ClInclude>
     <ClInclude Include="sources\vk_initializers.h">
       <Filter>sources\render managment\vk</Filter>
     </ClInclude>
@@ -2442,6 +2448,9 @@
       <Filter>sources\render managment</Filter>
     </ClCompile>
     <ClCompile Include="sources\render_pipeline.cpp">
+      <Filter>sources\render managment</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\render_pass_descriptor.cpp">
       <Filter>sources\render managment</Filter>
     </ClCompile>
     <ClCompile Include="sources\render_target.cpp">
@@ -3294,6 +3303,9 @@
       <Filter>sources\render managment\vk</Filter>
     </ClCompile>
     <ClCompile Include="sources\vk_swap_chain.cpp">
+      <Filter>sources\render managment\vk</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\vk_render_pass_descriptor.cpp">
       <Filter>sources\render managment\vk</Filter>
     </ClCompile>
     <ClCompile Include="sources\vk_initializers.cpp">

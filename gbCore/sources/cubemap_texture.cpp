@@ -9,6 +9,12 @@
 #include "cubemap_texture.h"
 #include "resource_status.h"
 
+#if USED_GRAPHICS_API == VULKAN_API
+
+#include "vk_device.h"
+
+#endif
+
 namespace gb
 {
     cubemap_texture_transfering_data::cubemap_texture_transfering_data() :
@@ -17,6 +23,16 @@ namespace gb
     {
         m_data.fill(nullptr);
         m_type = e_resource_transfering_data_type_cubemap_texture;
+
+#if USED_GRAPHICS_API == VULKAN_API
+
+        m_image = VK_NULL_HANDLE;
+        m_image_memory = VK_NULL_HANDLE;
+        m_image_view = VK_NULL_HANDLE;
+        m_sampler = VK_NULL_HANDLE;
+        m_is_image_owner = false;
+
+#endif
     }
     
     cubemap_texture_transfering_data::~cubemap_texture_transfering_data()
@@ -89,6 +105,19 @@ namespace gb
     cubemap_texture::~cubemap_texture()
     {
         gl::command::delete_textures(1, &m_data->m_texture_id);
+
+#if USED_GRAPHICS_API == VULKAN_API
+
+        if (m_data->m_is_image_owner)
+        {
+            const VkDevice logical_device = vk_device::get_instance()->get_logical_device();
+            vkDestroySampler(logical_device, m_data->m_sampler, nullptr);
+            vkDestroyImageView(logical_device, m_data->m_image_view, nullptr);
+            vkDestroyImage(logical_device, m_data->m_image, nullptr);
+            vkFreeMemory(logical_device, m_data->m_image_memory, nullptr);
+        }
+
+#endif
     }
     
     void cubemap_texture::on_transfering_data_serialized(const std::shared_ptr<resource_transfering_data> &data)
@@ -118,6 +147,17 @@ namespace gb
             case e_resource_transfering_data_type_cubemap_texture:
             {
                 m_data->m_texture_id = std::static_pointer_cast<cubemap_texture_transfering_data>(data)->m_texture_id;
+
+#if USED_GRAPHICS_API == VULKAN_API
+
+                const auto texture_data = std::static_pointer_cast<cubemap_texture_transfering_data>(data);
+                m_data->m_image = texture_data->m_image;
+                m_data->m_image_memory = texture_data->m_image_memory;
+                m_data->m_image_view = texture_data->m_image_view;
+                m_data->m_sampler = texture_data->m_sampler;
+                m_data->m_is_image_owner = texture_data->m_is_image_owner;
+
+#endif
                 for (ui32 i = 0; i < m_data->m_data.size(); i++)
                 {
                     delete [] m_data->m_data[i];
@@ -202,5 +242,24 @@ namespace gb
         return m_data ? m_data->m_mtl_texture_id : nullptr;
     }
     
+#endif
+
+#if USED_GRAPHICS_API == VULKAN_API
+
+    VkImage cubemap_texture::get_vk_image() const
+    {
+        return m_data ? m_data->m_image : VK_NULL_HANDLE;
+    }
+
+    VkImageView cubemap_texture::get_vk_image_view() const
+    {
+        return m_data ? m_data->m_image_view : VK_NULL_HANDLE;
+    }
+
+    VkSampler cubemap_texture::get_vk_sampler() const
+    {
+        return m_data ? m_data->m_sampler : VK_NULL_HANDLE;
+    }
+
 #endif
 }

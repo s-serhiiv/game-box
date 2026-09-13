@@ -1,5 +1,5 @@
 void main()
 {
-    gl_Position = get_pos_mvp();
-    v_screen_position = gl_Position;
+    gl_Position = vec4(a_position, 1.0);
+    v_texcoord = a_texcoord;
 }

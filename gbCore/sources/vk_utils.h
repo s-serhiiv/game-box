@@ -36,6 +36,7 @@ namespace gb
 	fp##entrypoint = reinterpret_cast<PFN_vk##entrypoint>(vkGetInstanceProcAddr(instance, "vk"#entrypoint)); \
 	if (fp##entrypoint == NULL) \
 	{ \
+		std::cout << "Fatal : Vulkan instance entrypoint is missing: vk"#entrypoint << std::endl; \
 		exit(1); \
 	} \
 }
@@ -45,6 +46,7 @@ namespace gb
 	fp##entrypoint = reinterpret_cast<PFN_vk##entrypoint>(vkGetDeviceProcAddr(device, "vk"#entrypoint)); \
 	if (fp##entrypoint == NULL) \
 	{ \
+		std::cout << "Fatal : Vulkan device entrypoint is missing: vk"#entrypoint << std::endl; \
 		exit(1); \
 	} \
 }

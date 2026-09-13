@@ -1,14 +1,10 @@
+layout(location = 1) out vec4 attachment_02;
+layout(location = 2) out vec4 attachment_03;
+
 void main()
 {
     vec4 color = texture2D(sampler_01, v_texcoord);
-    color.a = 1.0;
-    if (color.a < 1.0)
-    {
-        discard;
-    }
-    //vec3 light_position = vec3(0.0, 128.0, 0.0);
-    //vec3 light_direction = (light_position - v_screen_position.xyz);
-    //color = color * max(dot(normalize(v_normal), normalize(light_direction)), 0.0);
-    //color.a = 1.0;
-    gl_FragColor = color;
+    attachment_01 = color;
+    attachment_02 = vec4(normalize(v_normal), 1.0);
+    attachment_03 = vec4(v_screen_position.xyz, gl_FragCoord.z);
 }

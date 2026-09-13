@@ -31,8 +31,10 @@ namespace gb
 #if USED_GRAPHICS_API == VULKAN_API
         
         VkImage m_image;
+        VkDeviceMemory m_image_memory;
         VkImageView m_image_view;
         VkSampler m_sampler;
+        bool m_is_image_owner;
         
 #elif USED_GRAPHICS_API == METAL_API
         
@@ -87,6 +89,14 @@ namespace gb
         
         std::shared_ptr<mtl_texture> get_mtl_texture_id() const override;
         
+#endif
+
+#if USED_GRAPHICS_API == VULKAN_API
+
+        VkImage get_vk_image() const override;
+        VkImageView get_vk_image_view() const override;
+        VkSampler get_vk_sampler() const override;
+
 #endif
         
         ui32 get_format() const override;

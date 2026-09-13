@@ -40,10 +40,7 @@ namespace gb
 #if USED_GRAPHICS_API == VULKAN_API
 
 		ui32 current_image_index = vk_device::get_instance()->get_current_image_index();
-		VkRenderPass render_pass = vk_swap_chain::get_instance()->get_render_pass();
-
 		VkCommandBuffer draw_cmd_buffer = vk_device::get_instance()->get_draw_cmd_buffer(current_image_index);
-		VkFramebuffer frame_buffer = vk_device::get_instance()->get_frame_buffer(current_image_index);
 
 		vkResetCommandBuffer(draw_cmd_buffer, 0);
 
@@ -52,40 +49,8 @@ namespace gb
 		cmd_buffer_info.flags = VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT;
 		cmd_buffer_info.pNext = nullptr;
 
-		VkClearValue clear_values[2];
-		clear_values[0].color = { { 1.f, 0.f, 0.f, 1.f } };
-		clear_values[1].depthStencil = { 1.f, 0 };
-
-		VkRenderPassBeginInfo vk_render_pass_begin_info = {};
-		vk_render_pass_begin_info.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
-		vk_render_pass_begin_info.pNext = nullptr;
-		vk_render_pass_begin_info.renderPass = render_pass;
-		vk_render_pass_begin_info.renderArea.offset.x = 0;
-		vk_render_pass_begin_info.renderArea.offset.y = 0;
-		vk_render_pass_begin_info.renderArea.extent.width = get_screen_width();
-		vk_render_pass_begin_info.renderArea.extent.height = get_screen_height();
-		vk_render_pass_begin_info.clearValueCount = 2;
-		vk_render_pass_begin_info.pClearValues = clear_values;
-		vk_render_pass_begin_info.framebuffer = frame_buffer;
-		
 		VkResult result = vkBeginCommandBuffer(draw_cmd_buffer, &cmd_buffer_info);
 		assert(result == VK_SUCCESS);
-
-		vkCmdBeginRenderPass(draw_cmd_buffer, &vk_render_pass_begin_info, VK_SUBPASS_CONTENTS_INLINE);
-
-		VkViewport viewport = {};
-		viewport.height = static_cast<f32>(get_screen_width());
-		viewport.width = static_cast<f32>(get_screen_height());
-		viewport.minDepth = 0.f;
-		viewport.maxDepth = 1.f;
-		vkCmdSetViewport(draw_cmd_buffer, 0, 1, &viewport);
-
-		VkRect2D scissor = {};
-		scissor.extent.width = get_screen_width();
-		scissor.extent.height = get_screen_height();
-		scissor.offset.x = 0;
-		scissor.offset.y = 0;
-		vkCmdSetScissor(draw_cmd_buffer, 0, 1, &scissor);
 
 #endif
 
@@ -116,8 +81,6 @@ namespace gb
 
 		ui32 current_image_index = vk_device::get_instance()->get_current_image_index();
 		VkCommandBuffer draw_cmd_buffer = vk_device::get_instance()->get_draw_cmd_buffer(current_image_index);
-
-		vkCmdEndRenderPass(draw_cmd_buffer);
 
 		VkResult result = vkEndCommandBuffer(draw_cmd_buffer);
 		assert(result == VK_SUCCESS);

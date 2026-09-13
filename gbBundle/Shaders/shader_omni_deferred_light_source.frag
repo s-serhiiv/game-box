@@ -1,18 +1,7 @@
-#if defined(USE_BINDINGS)
-
-layout(binding = 8) uniform mat4   u_mat_i_vp;
-layout(binding = 9) uniform vec3   u_position;
-layout(binding = 10) uniform float u_radius;
-layout(binding = 11) uniform vec4  u_color;
-
-#else
-
 uniform mat4  u_mat_i_vp;
 uniform vec3  u_position;
 uniform float u_radius;
 uniform vec4  u_color;
-
-#endif
 
 void main()
 {

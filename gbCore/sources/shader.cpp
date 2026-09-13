@@ -13,10 +13,17 @@
 #include "vk_device.h"
 #include "vk_initializers.h"
 #include "vk_utils.h"
+#include "vk_swap_chain.h"
 
 namespace gb
 {
     static ui32 g_shader_id = 0;
+
+#if USED_GRAPHICS_API == VULKAN_API
+
+	static shader* g_vk_shader = nullptr;
+
+#endif
     
     extern const struct attribute_names
     {
@@ -34,6 +41,7 @@ namespace gb
         std::string m_mat_m;
         std::string m_mat_p;
         std::string m_mat_v;
+		std::string m_mat_n;
         
     } uniform_names;
     
@@ -64,7 +72,8 @@ namespace gb
     {
         "u_mat_m",
         "u_mat_p",
-        "u_mat_v"
+		"u_mat_v",
+		"u_mat_n"
     };
     
     const struct sampler_names sampler_names =
@@ -100,60 +109,6 @@ namespace gb
     m_array_size(size)
     {
 
-#if USED_GRAPHICS_API == VULKAN_API
-
-		switch (type)
-		{
-		case gb::e_uniform_type_mat4:
-			m_vk_buffer = std::make_shared<vk_uniform_value_buffer>(sizeof(glm::mat4));
-			break;
-		case gb::e_uniform_type_mat4_array:
-			m_vk_buffer = std::make_shared<vk_uniform_value_buffer>(m_array_size * sizeof(glm::mat4));
-			break;
-		case gb::e_uniform_type_mat3:
-			m_vk_buffer = std::make_shared<vk_uniform_value_buffer>(sizeof(glm::mat3));
-			break;
-		case gb::e_uniform_type_mat3_array:
-			m_vk_buffer = std::make_shared<vk_uniform_value_buffer>(m_array_size * sizeof(glm::mat3));
-			break;
-		case gb::e_uniform_type_vec4:
-			m_vk_buffer = std::make_shared<vk_uniform_value_buffer>(sizeof(glm::vec4));
-			break;
-		case gb::e_uniform_type_vec4_array:
-			m_vk_buffer = std::make_shared<vk_uniform_value_buffer>(m_array_size * sizeof(glm::vec4));
-			break;
-		case gb::e_uniform_type_vec3:
-			m_vk_buffer = std::make_shared<vk_uniform_value_buffer>(sizeof(glm::vec3));
-			break;
-		case gb::e_uniform_type_vec3_array:
-			m_vk_buffer = std::make_shared<vk_uniform_value_buffer>(m_array_size * sizeof(glm::vec3));
-			break;
-		case gb::e_uniform_type_vec2:
-			m_vk_buffer = std::make_shared<vk_uniform_value_buffer>(sizeof(glm::vec2));
-			break;
-		case gb::e_uniform_type_vec2_array:
-			m_vk_buffer = std::make_shared<vk_uniform_value_buffer>(m_array_size * sizeof(glm::vec2));
-			break;
-		case gb::e_uniform_type_f32:
-			m_vk_buffer = std::make_shared<vk_uniform_value_buffer>(sizeof(f32));
-			break;
-		case gb::e_uniform_type_f32_array:
-			m_vk_buffer = std::make_shared<vk_uniform_value_buffer>(m_array_size * sizeof(f32));
-			break;
-		case gb::e_uniform_type_i32:
-			m_vk_buffer = std::make_shared<vk_uniform_value_buffer>(sizeof(i32));
-			break;
-		case gb::e_uniform_type_i32_array:
-			m_vk_buffer = std::make_shared<vk_uniform_value_buffer>(m_array_size * sizeof(i32));
-			break;
-		case gb::e_uniform_type_sampler:
-			break;
-		default:
-			break;
-		}
-
-#endif
-
     }
     
     shader_uniform::~shader_uniform()
@@ -171,12 +126,6 @@ namespace gb
         assert(m_type == e_uniform_type_mat4);
         m_mat4_value = matrix;
 
-#if USED_GRAPHICS_API == VULKAN_API
-
-		m_vk_buffer->apply(&m_mat4_value[0]);
-
-#endif
-
     }
     
     void shader_uniform::set(glm::mat4 *matrices, i32 size)
@@ -186,24 +135,12 @@ namespace gb
 		assert(m_array_size == size);
         m_array_size = size;
 
-#if USED_GRAPHICS_API == VULKAN_API
-
-		m_vk_buffer->apply(&m_mat4_array[0]);
-
-#endif
-
     }
     
     void shader_uniform::set(const glm::mat3& matrix)
     {
         assert(m_type == e_uniform_type_mat3);
         m_mat3_value = matrix;
-
-#if USED_GRAPHICS_API == VULKAN_API
-
-		m_vk_buffer->apply(&m_mat3_value[0]);
-
-#endif
 
     }
     
@@ -214,24 +151,12 @@ namespace gb
 		assert(m_array_size == size);
         m_array_size = size;
 
-#if USED_GRAPHICS_API == VULKAN_API
-
-		m_vk_buffer->apply(&m_mat3_array[0]);
-
-#endif
-
     }
     
     void shader_uniform::set(const glm::vec4& vector)
     {
         assert(m_type == e_uniform_type_vec4);
         m_vec4_value = vector;
-
-#if USED_GRAPHICS_API == VULKAN_API
-
-		m_vk_buffer->apply(&m_vec4_value[0]);
-
-#endif
 
     }
     
@@ -242,24 +167,12 @@ namespace gb
 		assert(m_array_size == size);
         m_array_size = size;
 
-#if USED_GRAPHICS_API == VULKAN_API
-
-		m_vk_buffer->apply(&m_vec4_array[0]);
-
-#endif
-
     }
     
     void shader_uniform::set(const glm::vec3& vector)
     {
         assert(m_type == e_uniform_type_vec3);
         m_vec3_value = vector;
-
-#if USED_GRAPHICS_API == VULKAN_API
-
-		m_vk_buffer->apply(&m_vec3_value[0]);
-
-#endif
 
     }
     
@@ -270,24 +183,12 @@ namespace gb
 		assert(m_array_size == size);
         m_array_size = size;
 
-#if USED_GRAPHICS_API == VULKAN_API
-
-		m_vk_buffer->apply(&m_vec3_array[0]);
-
-#endif
-
     }
     
     void shader_uniform::set(const glm::vec2& vector)
     {
         assert(m_type == e_uniform_type_vec2);
         m_vec2_value = vector;
-
-#if USED_GRAPHICS_API == VULKAN_API
-
-		m_vk_buffer->apply(&m_vec2_value[0]);
-
-#endif
 
     }
     
@@ -298,24 +199,12 @@ namespace gb
 		assert(m_array_size == size);
         m_array_size = size;
 
-#if USED_GRAPHICS_API == VULKAN_API
-
-		m_vk_buffer->apply(&m_vec2_array[0]);
-
-#endif
-
     }
     
     void shader_uniform::set(f32 value)
     {
         assert(m_type == e_uniform_type_f32);
         m_f32_value = value;
-
-#if USED_GRAPHICS_API == VULKAN_API
-
-		m_vk_buffer->apply(&m_f32_value);
-
-#endif
 
     }
     
@@ -326,24 +215,12 @@ namespace gb
 		assert(m_array_size == size);
         m_array_size = size;
 
-#if USED_GRAPHICS_API == VULKAN_API
-
-		m_vk_buffer->apply(&m_f32_array[0]);
-
-#endif
-
     }
     
     void shader_uniform::set(i32 value)
     {
         assert(m_type == e_uniform_type_i32);
         m_i32_value = value;
-
-#if USED_GRAPHICS_API == VULKAN_API
-
-		m_vk_buffer->apply(&m_i32_value);
-
-#endif
 
     }
     
@@ -353,12 +230,6 @@ namespace gb
         m_i32_array = values;
 		assert(m_array_size == size);
         m_array_size = size;
-
-#if USED_GRAPHICS_API == VULKAN_API
-
-		m_vk_buffer->apply(&m_i32_array[0]);
-
-#endif
 
     }
     
@@ -469,7 +340,7 @@ namespace gb
     {
         return m_array_size;
     }
-    
+
     shader_transfering_data::shader_transfering_data() :
     m_shader_id(0),
     m_vs_source_code(""),
@@ -494,6 +365,13 @@ namespace gb
                                         const std::string& fs_source_code)
     {
         shader_shared_ptr shader = std::make_shared<gb::shader>(guid);
+
+#if USED_GRAPHICS_API == VULKAN_API
+
+		shader->m_vs_source_code = vs_source_code;
+		shader->m_fs_source_code = fs_source_code;
+
+#endif
         
         std::string out_message = "";
         bool out_success = false;
@@ -557,7 +435,38 @@ namespace gb
     
     shader::~shader()
     {
+#if USED_GRAPHICS_API == VULKAN_API
+
+		const auto device = vk_device::get_instance()->get_logical_device();
+		if(m_pipeline_layout != VK_NULL_HANDLE)
+		{
+			vkDestroyPipelineLayout(device, m_pipeline_layout, nullptr);
+		}
+		for (auto descriptor_pool : m_vk_frame_descriptor_pools)
+		{
+			if (descriptor_pool != VK_NULL_HANDLE)
+			{
+				vkDestroyDescriptorPool(device, descriptor_pool, nullptr);
+			}
+		}
+		if(m_vk_descriptor_set_layout != VK_NULL_HANDLE)
+		{
+			vkDestroyDescriptorSetLayout(device, m_vk_descriptor_set_layout, nullptr);
+		}
+		if(m_vs_shader_stage.module != VK_NULL_HANDLE)
+		{
+			vkDestroyShaderModule(device, m_vs_shader_stage.module, nullptr);
+		}
+		if(m_fs_shader_stage.module != VK_NULL_HANDLE)
+		{
+			vkDestroyShaderModule(device, m_fs_shader_stage.module, nullptr);
+		}
+
+#else
+
         gl::command::delete_program(m_shader_id);
+
+#endif
     }
     
     void shader::on_transfering_data_serialized(const std::shared_ptr<resource_transfering_data> &data)
@@ -591,6 +500,8 @@ namespace gb
 
 				m_vs_shader_stage = std::static_pointer_cast<shader_transfering_data>(data)->m_vs_shader_stage;
 				m_fs_shader_stage = std::static_pointer_cast<shader_transfering_data>(data)->m_fs_shader_stage;
+				m_vs_source_code = std::static_pointer_cast<shader_transfering_data>(data)->m_vs_source_code;
+				m_fs_source_code = std::static_pointer_cast<shader_transfering_data>(data)->m_fs_source_code;
 
 #endif
 
@@ -608,9 +519,12 @@ namespace gb
     
     void shader::setup_uniforms()
     {
+		m_cached_uniform.resize(e_shader_uniform_max + e_shader_sampler_max, nullptr);
+
         m_uniforms[e_shader_uniform_mat_m] = gl::command::get_uniform_location(m_shader_id, uniform_names.m_mat_m.c_str());
         m_uniforms[e_shader_uniform_mat_p] = gl::command::get_uniform_location(m_shader_id, uniform_names.m_mat_p.c_str());
         m_uniforms[e_shader_uniform_mat_v] = gl::command::get_uniform_location(m_shader_id, uniform_names.m_mat_v.c_str());
+		m_uniforms[e_shader_uniform_mat_n] = gl::command::get_uniform_location(m_shader_id, uniform_names.m_mat_n.c_str());
         
         m_samplers[e_shader_sampler_01] = gl::command::get_uniform_location(m_shader_id, sampler_names.m_sampler_01.c_str());
         m_samplers[e_shader_sampler_02] = gl::command::get_uniform_location(m_shader_id, sampler_names.m_sampler_02.c_str());
@@ -624,8 +538,9 @@ namespace gb
 #if USED_GRAPHICS_API == VULKAN_API
 
 		VkDescriptorSetLayoutBinding mat_m_binding = vk_initializers::descriptor_set_layout_binding(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT, 0, 1);
-		VkDescriptorSetLayoutBinding mat_v_binding = vk_initializers::descriptor_set_layout_binding(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT, 1, 1);
-		VkDescriptorSetLayoutBinding mat_p_binding = vk_initializers::descriptor_set_layout_binding(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT, 2, 1);
+		VkDescriptorSetLayoutBinding mat_p_binding = vk_initializers::descriptor_set_layout_binding(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT, 1, 1);
+		VkDescriptorSetLayoutBinding mat_v_binding = vk_initializers::descriptor_set_layout_binding(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT, 2, 1);
+		VkDescriptorSetLayoutBinding mat_n_binding = vk_initializers::descriptor_set_layout_binding(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT, 13, 1);
 
 		VkDescriptorSetLayoutBinding sampler_01_binding = vk_initializers::descriptor_set_layout_binding(VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT, 3, 1);
 		VkDescriptorSetLayoutBinding sampler_02_binding = vk_initializers::descriptor_set_layout_binding(VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT, 4, 1);
@@ -635,11 +550,13 @@ namespace gb
 		VkDescriptorSetLayoutBinding sampler_06_binding = vk_initializers::descriptor_set_layout_binding(VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT, 8, 1);
 		VkDescriptorSetLayoutBinding sampler_07_binding = vk_initializers::descriptor_set_layout_binding(VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT, 9, 1);
 		VkDescriptorSetLayoutBinding sampler_08_binding = vk_initializers::descriptor_set_layout_binding(VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT, 10, 1);
+		VkDescriptorSetLayoutBinding vs_custom_uniforms_binding = vk_initializers::descriptor_set_layout_binding(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT, 11, 1);
+		VkDescriptorSetLayoutBinding fs_custom_uniforms_binding = vk_initializers::descriptor_set_layout_binding(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_FRAGMENT_BIT, 12, 1);
         
 		std::vector<VkDescriptorSetLayoutBinding> bindings = { 
 			mat_m_binding,
-			mat_v_binding, 
 			mat_p_binding,
+			mat_v_binding,
 			sampler_01_binding, 
 			sampler_02_binding,
 			sampler_03_binding, 
@@ -647,7 +564,10 @@ namespace gb
 			sampler_05_binding,
 			sampler_06_binding, 
 			sampler_07_binding, 
-			sampler_08_binding, 
+			sampler_08_binding,
+			vs_custom_uniforms_binding,
+			fs_custom_uniforms_binding,
+			mat_n_binding
 		};
 
 		VkDescriptorSetLayoutCreateInfo layout_create_info = vk_initializers::descriptor_set_layout_create_info(bindings);
@@ -658,41 +578,24 @@ namespace gb
 
 		VK_CHECK(vkCreatePipelineLayout(vk_device::get_instance()->get_logical_device(), &pipeline_layout_info, nullptr, &m_pipeline_layout));
 
-		std::vector<VkDescriptorPoolSize> pool_sizes;
-		pool_sizes.resize(11);
-		pool_sizes[0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-		pool_sizes[0].descriptorCount = 1;
-		pool_sizes[1].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-		pool_sizes[1].descriptorCount = 1;
-		pool_sizes[2].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-		pool_sizes[2].descriptorCount = 1;
-		pool_sizes[3].type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-		pool_sizes[3].descriptorCount = 1;
-		pool_sizes[4].type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-		pool_sizes[4].descriptorCount = 1;
-		pool_sizes[5].type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-		pool_sizes[5].descriptorCount = 1;
-		pool_sizes[6].type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-		pool_sizes[6].descriptorCount = 1;
-		pool_sizes[7].type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-		pool_sizes[7].descriptorCount = 1;
-		pool_sizes[8].type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-		pool_sizes[8].descriptorCount = 1;
-		pool_sizes[9].type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-		pool_sizes[9].descriptorCount = 1;
-		pool_sizes[10].type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-		pool_sizes[10].descriptorCount = 1;
+		m_cached_uniform[e_shader_uniform_mat_m] = std::make_shared<shader_uniform>(e_uniform_type_mat4);
+		m_cached_uniform[e_shader_uniform_mat_p] = std::make_shared<shader_uniform>(e_uniform_type_mat4);
+		m_cached_uniform[e_shader_uniform_mat_v] = std::make_shared<shader_uniform>(e_uniform_type_mat4);
+		m_cached_uniform[e_shader_uniform_mat_n] = std::make_shared<shader_uniform>(e_uniform_type_mat4);
 
-		VkDescriptorPoolCreateInfo pool_create_info = vk_initializers::descriptor_pool_create_info(pool_sizes, 1);
-		VK_CHECK(vkCreateDescriptorPool(vk_device::get_instance()->get_logical_device(), &pool_create_info, nullptr, &m_vk_descriptor_pool));
-
-		VkDescriptorSetAllocateInfo descriptor_set_alloc_info = {};
-		descriptor_set_alloc_info.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
-		descriptor_set_alloc_info.descriptorPool = m_vk_descriptor_pool;
-		descriptor_set_alloc_info.descriptorSetCount = 1;
-		descriptor_set_alloc_info.pSetLayouts = set_layouts;
-
-		VK_CHECK(vkAllocateDescriptorSets(vk_device::get_instance()->get_logical_device(), &descriptor_set_alloc_info, &m_descriptor_set));
+		shader_compiler_glsl::convert_to_vulkan_source(m_vs_source_code, 11, &m_vk_vs_custom_uniforms);
+		shader_compiler_glsl::convert_to_vulkan_source(m_fs_source_code, 12, &m_vk_fs_custom_uniforms);
+		const ui32 vs_uniforms_size = m_vk_vs_custom_uniforms.empty() ? 16 : m_vk_vs_custom_uniforms.back().m_offset + m_vk_vs_custom_uniforms.back().m_stride * m_vk_vs_custom_uniforms.back().m_array_size;
+		const ui32 fs_uniforms_size = m_vk_fs_custom_uniforms.empty() ? 16 : m_vk_fs_custom_uniforms.back().m_offset + m_vk_fs_custom_uniforms.back().m_stride * m_vk_fs_custom_uniforms.back().m_array_size;
+		m_vk_vs_custom_uniforms_data.resize(vs_uniforms_size, 0);
+		m_vk_fs_custom_uniforms_data.resize(fs_uniforms_size, 0);
+		ui8 fallback_pixel[] = { 255, 255, 255, 255 };
+		m_vk_fallback_texture = texture::construct(get_guid() + ".fallback", 1, 1, gl::constant::rgba_t, fallback_pixel);
+		const ui32 images_count = vk_swap_chain::get_instance()->get_images_count();
+		m_vk_frame_descriptor_pools.resize(images_count, VK_NULL_HANDLE);
+		m_vk_frame_numbers.resize(images_count, 0);
+		m_vk_frame_uniform_buffers.resize(images_count);
+		m_vk_frame_uniform_buffer_offsets.resize(images_count, 0);
 
 #endif
 
@@ -703,9 +606,8 @@ namespace gb
         m_attributes.at(e_shader_attribute_tangent) = gl::command::get_attribute_location(m_shader_id, attribute_names.m_tangent.c_str());
         m_attributes.at(e_shader_attribute_extra) = gl::command::get_attribute_location(m_shader_id, attribute_names.m_extra.c_str());
 
-        m_cached_uniform.resize(e_shader_uniform_max + e_shader_sampler_max, nullptr);
     }
-    
+
     const std::array<i32, e_shader_attribute_max>& shader::get_attributes() const
     {
         return m_attributes;
@@ -726,6 +628,46 @@ namespace gb
         }
         return handle;
     }
+
+#if USED_GRAPHICS_API == VULKAN_API
+
+	void shader::set_vk_custom_uniform(const std::string& uniform, const void* data, ui32 elements_count)
+	{
+		auto apply = [&](const std::vector<shader_custom_uniform_desc>& descriptions, std::vector<ui8>& buffer_data) {
+			for(const auto& description : descriptions)
+			{
+				if(description.m_name == uniform)
+				{
+					const ui32 count = std::min(elements_count, description.m_array_size);
+					if(description.m_type == "mat3")
+					{
+						const f32* source = static_cast<const f32*>(data);
+						for(ui32 element = 0; element < count; ++element)
+						{
+							for(ui32 column = 0; column < 3; ++column)
+							{
+								memcpy(buffer_data.data() + description.m_offset + element * description.m_stride + column * 16, source + element * 9 + column * 3, 12);
+							}
+						}
+					}
+					else
+					{
+						ui32 source_stride = description.m_element_size;
+						for(ui32 element = 0; element < count; ++element)
+						{
+							memcpy(buffer_data.data() + description.m_offset + element * description.m_stride, static_cast<const ui8*>(data) + element * source_stride, description.m_element_size);
+						}
+					}
+					break;
+				}
+			}
+		};
+
+		apply(m_vk_vs_custom_uniforms, m_vk_vs_custom_uniforms_data);
+		apply(m_vk_fs_custom_uniforms, m_vk_fs_custom_uniforms_data);
+	}
+
+#endif
     
     void shader::set_mat3(const glm::mat3 &matrix, e_shader_uniform uniform)
     {
@@ -751,6 +693,12 @@ namespace gb
         if(resource::is_loaded() && resource::is_commited())
         {
             gl::command::get_uniform_matrix_3fv(shader::get_custom_uniform(uniform), 1, 0, &matrix[0][0]);
+
+#if USED_GRAPHICS_API == VULKAN_API
+
+			set_vk_custom_uniform(uniform, &matrix[0][0]);
+
+#endif
         }
     }
     
@@ -778,6 +726,12 @@ namespace gb
         if(resource::is_loaded() && resource::is_commited())
         {
             gl::command::get_uniform_matrix_4fv(shader::get_custom_uniform(uniform), 1, 0, &matrix[0][0]);
+
+#if USED_GRAPHICS_API == VULKAN_API
+
+			set_vk_custom_uniform(uniform, &matrix[0][0]);
+
+#endif
         }
     }
     
@@ -795,6 +749,12 @@ namespace gb
         if(resource::is_loaded() && resource::is_commited())
         {
             gl::command::get_uniform_matrix_4fv(shader::get_custom_uniform(uniform), size, 0, &matrix[0][0][0]);
+
+#if USED_GRAPHICS_API == VULKAN_API
+
+			set_vk_custom_uniform(uniform, &matrix[0][0][0], size);
+
+#endif
         }
     }
     
@@ -822,6 +782,12 @@ namespace gb
         if(resource::is_loaded() && resource::is_commited())
         {
             gl::command::get_uniform_vector_2fv(shader::get_custom_uniform(uniform), 1, &vector[0]);
+
+#if USED_GRAPHICS_API == VULKAN_API
+
+			set_vk_custom_uniform(uniform, &vector[0]);
+
+#endif
         }
     }
     
@@ -830,6 +796,12 @@ namespace gb
         if(resource::is_loaded() && resource::is_commited())
         {
             gl::command::get_uniform_vector_2fv(shader::get_custom_uniform(uniform), size, &vectors[0][0]);
+
+#if USED_GRAPHICS_API == VULKAN_API
+
+			set_vk_custom_uniform(uniform, &vectors[0][0], size);
+
+#endif
         }
     }
     
@@ -857,6 +829,12 @@ namespace gb
         if(resource::is_loaded() && resource::is_commited())
         {
             gl::command::get_uniform_vector_3fv(shader::get_custom_uniform(uniform), 1, &vector[0]);
+
+#if USED_GRAPHICS_API == VULKAN_API
+
+			set_vk_custom_uniform(uniform, &vector[0]);
+
+#endif
         }
     }
     
@@ -865,6 +843,12 @@ namespace gb
         if(resource::is_loaded() && resource::is_commited())
         {
             gl::command::get_uniform_vector_3fv(shader::get_custom_uniform(uniform), size, &vectors[0][0]);
+
+#if USED_GRAPHICS_API == VULKAN_API
+
+			set_vk_custom_uniform(uniform, &vectors[0][0], size);
+
+#endif
         }
     }
     
@@ -892,6 +876,12 @@ namespace gb
         if(resource::is_loaded() && resource::is_commited())
         {
             gl::command::get_uniform_vector_4fv(shader::get_custom_uniform(uniform), 1, &vector[0]);
+
+#if USED_GRAPHICS_API == VULKAN_API
+
+			set_vk_custom_uniform(uniform, &vector[0]);
+
+#endif
         }
     }
     
@@ -900,6 +890,12 @@ namespace gb
         if(resource::is_loaded() && resource::is_commited())
         {
             gl::command::get_uniform_vector_4fv(shader::get_custom_uniform(uniform), size, &vectors[0][0]);
+
+#if USED_GRAPHICS_API == VULKAN_API
+
+			set_vk_custom_uniform(uniform, &vectors[0][0], size);
+
+#endif
         }
     }
     
@@ -927,6 +923,12 @@ namespace gb
         if(resource::is_loaded() && resource::is_commited())
         {
             gl::command::get_uniform_1f(shader::get_custom_uniform(uniform), value);
+
+#if USED_GRAPHICS_API == VULKAN_API
+
+			set_vk_custom_uniform(uniform, &value);
+
+#endif
         }
     }
     
@@ -954,6 +956,12 @@ namespace gb
         if(resource::is_loaded() && resource::is_commited())
         {
             gl::command::get_uniform_1i(shader::get_custom_uniform(uniform), value);
+
+#if USED_GRAPHICS_API == VULKAN_API
+
+			set_vk_custom_uniform(uniform, &value);
+
+#endif
         }
     }
     
@@ -965,21 +973,46 @@ namespace gb
             gl::command::set_active_texture(gl::constant::texture_0 + sampler);
             texture->bind();
             gl::command::get_uniform_1i(m_samplers[sampler], sampler);
+
+#if USED_GRAPHICS_API == VULKAN_API
+
+			const ui32 uniform_index = e_shader_uniform_max + sampler;
+			if (!m_cached_uniform[uniform_index])
+			{
+				m_cached_uniform[uniform_index] = std::make_shared<shader_uniform>(e_uniform_type_sampler);
+			}
+			m_cached_uniform[uniform_index]->set(texture, sampler);
+
+#endif
         }
     }
-    
-    void shader::bind() const
+
+	void shader::bind() const
     {
         if(resource::is_loaded() && resource::is_commited() && g_shader_id != m_shader_id)
         {
             g_shader_id = m_shader_id;
             gl::command::use_program(m_shader_id);
         }
+
+#if USED_GRAPHICS_API == VULKAN_API
+
+		g_vk_shader = const_cast<shader*>(this);
+
+#endif
     }
     
     void shader::unbind() const
     {
-        
+
+#if USED_GRAPHICS_API == VULKAN_API
+
+		if (g_vk_shader == this)
+		{
+			g_vk_shader = nullptr;
+		}
+
+#endif
     }
     
     i32 shader::get_custom_attribute(const std::string& attribute_name)
@@ -1038,9 +1071,105 @@ namespace gb
 		return m_pipeline_layout;
 	}
 
-	VkDescriptorSet shader::get_descriptor_set() const
+	VkDescriptorSet shader::construct_descriptor_set()
 	{
-		return m_descriptor_set;
+		const auto device = vk_device::get_instance();
+		const VkDevice logical_device = device->get_logical_device();
+		const ui32 image_index = device->get_current_image_index();
+		const ui64 frame_number = device->get_frame_number(image_index);
+		if (m_vk_frame_descriptor_pools[image_index] == VK_NULL_HANDLE)
+		{
+			const ui32 descriptor_sets_count = 1024;
+			std::vector<VkDescriptorPoolSize> pool_sizes = {
+				vk_initializers::descriptor_pool_size(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 6 * descriptor_sets_count),
+				vk_initializers::descriptor_pool_size(VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, e_shader_sampler_max * descriptor_sets_count)
+			};
+			VkDescriptorPoolCreateInfo pool_create_info = vk_initializers::descriptor_pool_create_info(pool_sizes, descriptor_sets_count);
+			VK_CHECK(vkCreateDescriptorPool(logical_device, &pool_create_info, nullptr, &m_vk_frame_descriptor_pools[image_index]));
+		}
+		if (m_vk_frame_numbers[image_index] != frame_number)
+		{
+			VK_CHECK(vkResetDescriptorPool(logical_device, m_vk_frame_descriptor_pools[image_index], 0));
+			m_vk_frame_uniform_buffer_offsets[image_index] = 0;
+			m_vk_frame_numbers[image_index] = frame_number;
+		}
+		if (!m_vk_frame_uniform_buffers[image_index])
+		{
+			const VkDeviceSize uniform_buffer_size = 2 * 1024 * 1024;
+			m_vk_frame_uniform_buffers[image_index] = std::make_shared<vk_buffer>();
+			VK_CHECK(vk_utils::create_buffer(VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
+										 VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
+										 m_vk_frame_uniform_buffers[image_index], uniform_buffer_size));
+			VK_CHECK(m_vk_frame_uniform_buffers[image_index]->map());
+		}
+
+		VkDescriptorSet descriptor_set = VK_NULL_HANDLE;
+		VkDescriptorSetAllocateInfo descriptor_set_alloc_info = {};
+		descriptor_set_alloc_info.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
+		descriptor_set_alloc_info.descriptorPool = m_vk_frame_descriptor_pools[image_index];
+		descriptor_set_alloc_info.descriptorSetCount = 1;
+		descriptor_set_alloc_info.pSetLayouts = &m_vk_descriptor_set_layout;
+		VK_CHECK(vkAllocateDescriptorSets(logical_device, &descriptor_set_alloc_info, &descriptor_set));
+
+		VkPhysicalDeviceProperties device_properties = {};
+		vkGetPhysicalDeviceProperties(device->get_physical_device(), &device_properties);
+		const VkDeviceSize uniform_buffer_alignment = device_properties.limits.minUniformBufferOffsetAlignment;
+		auto construct_uniform_buffer_info = [&](const void* data, VkDeviceSize size) {
+			auto& offset = m_vk_frame_uniform_buffer_offsets[image_index];
+			offset = (offset + uniform_buffer_alignment - 1) & ~(uniform_buffer_alignment - 1);
+			const auto buffer = m_vk_frame_uniform_buffers[image_index];
+			assert(offset + size <= buffer->get_size());
+			memcpy(static_cast<ui8*>(buffer->get_mapped_data()) + offset, data, size);
+			VkDescriptorBufferInfo result = {};
+			result.buffer = buffer->get_handler();
+			result.offset = offset;
+			result.range = size;
+			offset += size;
+			return result;
+		};
+
+		glm::mat4 mat_m = m_cached_uniform[e_shader_uniform_mat_m]->get_mat4();
+		glm::mat4 mat_p = m_cached_uniform[e_shader_uniform_mat_p]->get_mat4();
+		glm::mat4 mat_v = m_cached_uniform[e_shader_uniform_mat_v]->get_mat4();
+		glm::mat4 mat_n = m_cached_uniform[e_shader_uniform_mat_n]->get_mat4();
+		std::array<VkDescriptorBufferInfo, 6> buffer_infos = {
+			construct_uniform_buffer_info(&mat_m[0][0], sizeof(glm::mat4)),
+			construct_uniform_buffer_info(&mat_p[0][0], sizeof(glm::mat4)),
+			construct_uniform_buffer_info(&mat_v[0][0], sizeof(glm::mat4)),
+			construct_uniform_buffer_info(m_vk_vs_custom_uniforms_data.data(), m_vk_vs_custom_uniforms_data.size()),
+			construct_uniform_buffer_info(m_vk_fs_custom_uniforms_data.data(), m_vk_fs_custom_uniforms_data.size()),
+			construct_uniform_buffer_info(&mat_n[0][0], sizeof(glm::mat4))
+		};
+		const ui32 bindings[] = { 0, 1, 2, 11, 12, 13 };
+		std::array<VkWriteDescriptorSet, 6> descriptor_writes;
+		for (ui32 i = 0; i < descriptor_writes.size(); ++i)
+		{
+			descriptor_writes[i] = vk_initializers::write_descriptor_set(descriptor_set, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, bindings[i], &buffer_infos[i]);
+		}
+		vkUpdateDescriptorSets(logical_device, static_cast<ui32>(descriptor_writes.size()), descriptor_writes.data(), 0, nullptr);
+
+		for (ui32 sampler = 0; sampler < e_shader_sampler_max; ++sampler)
+		{
+			texture_shared_ptr texture = m_vk_fallback_texture;
+			const ui32 uniform_index = e_shader_uniform_max + sampler;
+			if (m_cached_uniform[uniform_index] && m_cached_uniform[uniform_index]->get_texture()->get_vk_image_view() != VK_NULL_HANDLE)
+			{
+				texture = m_cached_uniform[uniform_index]->get_texture();
+			}
+			VkDescriptorImageInfo image_info = vk_initializers::descriptor_image_info(texture->get_vk_sampler(), texture->get_vk_image_view(), VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+			VkWriteDescriptorSet descriptor_write = vk_initializers::write_descriptor_set(descriptor_set, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 3 + sampler, &image_info);
+			vkUpdateDescriptorSets(logical_device, 1, &descriptor_write, 0, nullptr);
+		}
+		return descriptor_set;
+	}
+
+	void shader::bind_vulkan_descriptor_set()
+	{
+		assert(g_vk_shader);
+		const auto device = vk_device::get_instance();
+		const VkDescriptorSet descriptor_set = g_vk_shader->construct_descriptor_set();
+		vkCmdBindDescriptorSets(device->get_draw_cmd_buffer(device->get_current_image_index()), VK_PIPELINE_BIND_POINT_GRAPHICS,
+							g_vk_shader->get_pipeline_layout(), 0, 1, &descriptor_set, 0, nullptr);
 	}
 
 #endif

@@ -637,6 +637,7 @@
     <ClInclude Include="sources\ogl_graveyard_controller.h" />
     <ClInclude Include="sources\particle_emitter.h" />
     <ClInclude Include="sources\render_pipeline.h" />
+    <ClInclude Include="sources\render_pass_descriptor.h" />
     <ClInclude Include="sources\render_target.h" />
     <ClInclude Include="sources\render_techniques_accessor.h" />
     <ClInclude Include="sources\render_techniques_importer.h" />
@@ -679,6 +680,7 @@
     <ClInclude Include="sources\vk_initializers.h" />
     <ClInclude Include="sources\vk_surface.h" />
     <ClInclude Include="sources\vk_swap_chain.h" />
+    <ClInclude Include="sources\vk_render_pass_descriptor.h" />
     <ClInclude Include="sources\vk_uniform_sampler_buffer.h" />
     <ClInclude Include="sources\vk_uniform_value_buffer.h" />
     <ClInclude Include="sources\vk_utils.h" />
@@ -1138,6 +1140,7 @@
     <ClCompile Include="sources\trail_3d.cpp" />
     <ClCompile Include="sources\window_impl_win32.cpp" />
     <ClCompile Include="sources\render_pipeline.cpp" />
+    <ClCompile Include="sources\render_pass_descriptor.cpp" />
     <ClCompile Include="sources\render_target.cpp" />
     <ClCompile Include="sources\render_techniques_accessor.cpp" />
     <ClCompile Include="sources\render_techniques_importer.cpp" />
@@ -1174,6 +1177,7 @@
     <ClCompile Include="sources\vk_initializers.cpp" />
     <ClCompile Include="sources\vk_surface.cpp" />
     <ClCompile Include="sources\vk_swap_chain.cpp" />
+    <ClCompile Include="sources\vk_render_pass_descriptor.cpp" />
     <ClCompile Include="sources\vk_uniform_sampler_buffer.cpp" />
     <ClCompile Include="sources\vk_uniform_value_buffer.cpp" />
     <ClCompile Include="sources\vk_utils.cpp" />
@@ -1515,7 +1519,7 @@
     </Link>
     <Lib>
       <AdditionalDependencies>glew32s.lib</AdditionalDependencies>
-      <AdditionalLibraryDirectories>.\libraries\glew-2.0.0\lib\x64;C:\VulkanSDK\1.1.73.0\Lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>.\libraries\glew-2.0.0\lib\x64;$(VULKAN_SDK)\Lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='debug-server|Win32'">
@@ -1701,7 +1705,7 @@
     </Link>
     <Lib>
       <AdditionalDependencies>glew32s.lib</AdditionalDependencies>
-      <AdditionalLibraryDirectories>.\libraries\glew-2.0.0\lib\x64;C:\VulkanSDK\1.1.73.0\Lib</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>.\libraries\glew-2.0.0\lib\x64;$(VULKAN_SDK)\Lib</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='release-server|Win32'">

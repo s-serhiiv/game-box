@@ -14,6 +14,7 @@ namespace gb
 
 	vk_buffer::~vk_buffer()
 	{
+		unmap();
 		if (m_vk_buffer)
 		{
 			vkDestroyBuffer(m_vk_device, m_vk_buffer, nullptr);
@@ -84,6 +85,11 @@ namespace gb
 	VkDeviceMemory vk_buffer::get_memory() const
 	{
 		return m_vk_memory;
+	}
+
+	const VkDescriptorBufferInfo& vk_buffer::get_descriptor() const
+	{
+		return m_vk_descriptor;
 	}
 
 	void* vk_buffer::get_mapped_data() const

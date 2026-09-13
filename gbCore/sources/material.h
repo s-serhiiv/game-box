@@ -218,6 +218,8 @@ namespace gb
 		VkPipelineColorBlendAttachmentState m_color_blend_attachment;
 		VkPipelineColorBlendStateCreateInfo m_color_blend_state;
 		VkPipelineDepthStencilStateCreateInfo m_depth_stencil_state;
+		VkPipelineDynamicStateCreateInfo m_dynamic_state;
+		std::array<VkDynamicState, 2> m_dynamic_states;
 		std::vector<VkWriteDescriptorSet> m_descriptor_writes;
 
 		bool m_is_pipeline_constructed = false;

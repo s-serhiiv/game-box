@@ -15,12 +15,16 @@
 #include "mesh_2d.h"
 #include "mesh_constructor.h"
 
+#if USED_GRAPHICS_API == METAL_API || USED_GRAPHICS_API == VULKAN_API
+
+#include "render_pass_descriptor.h"
+
 #if USED_GRAPHICS_API == METAL_API
 
-#include "mtl_device.h"
-#include "mtl_render_pass_descriptor.h"
 #include "mtl_render_encoder.h"
 #include "mtl_buffer.h"
+
+#endif
 
 #endif
 
@@ -73,9 +77,12 @@ namespace gb
         
         render_technique->m_quad = mesh_constructor::create_screen_quad();
         
-#if USED_GRAPHICS_API == METAL_API
+#if USED_GRAPHICS_API == METAL_API || USED_GRAPHICS_API == VULKAN_API
         
-        render_technique->m_render_pass_descriptor = mtl_render_pass_descriptor::construct_ss_render_pass_descriptor(configuration);
+        render_technique->m_render_pass_descriptor = render_pass_descriptor::construct_ss_render_pass_descriptor(configuration);
+        const auto color_attachments_texture = render_technique->m_render_pass_descriptor->get_color_attachments_texture();
+        assert(!color_attachments_texture.empty());
+        render_technique->m_color_attachment_texture = color_attachments_texture.at(0);
         
 #endif
         
@@ -100,7 +107,7 @@ namespace gb
     void render_technique_ss::bind()
     {
         
-#if USED_GRAPHICS_API == METAL_API
+#if USED_GRAPHICS_API == METAL_API || USED_GRAPHICS_API == VULKAN_API
         
         m_render_pass_descriptor->bind();
         
@@ -150,7 +157,7 @@ namespace gb
             m_material->unbind();
         }
         
-#if USED_GRAPHICS_API == METAL_API
+#if USED_GRAPHICS_API == METAL_API || USED_GRAPHICS_API == VULKAN_API
         
         m_render_pass_descriptor->unbind();
         

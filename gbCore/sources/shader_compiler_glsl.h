@@ -13,6 +13,20 @@
 
 namespace gb
 {
+#if USED_GRAPHICS_API == VULKAN_API
+
+	struct shader_custom_uniform_desc
+	{
+		std::string m_name;
+		std::string m_type;
+		ui32 m_offset = 0;
+		ui32 m_element_size = 0;
+		ui32 m_stride = 0;
+		ui32 m_array_size = 1;
+	};
+
+#endif
+
     class shader_compiler_glsl
     {
     private:
@@ -30,6 +44,7 @@ namespace gb
 #if USED_GRAPHICS_API == VULKAN_API
 
 		static VkPipelineShaderStageCreateInfo compile(const std::string& source_code, ui32 shader_type, std::string* out_message = nullptr, bool* out_success = nullptr);
+		static std::string convert_to_vulkan_source(const std::string& source_code, ui32 binding, std::vector<shader_custom_uniform_desc>* uniforms = nullptr);
 
 #else
 

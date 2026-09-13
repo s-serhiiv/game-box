@@ -68,7 +68,7 @@ namespace gb
 		buffer->set_memory(memory);
 
 		buffer->set_aligment(mem_requirements.alignment);
-		buffer->set_size(mem_alloc.allocationSize);
+		buffer->set_size(size);
 		buffer->set_usage_flags(usage_flags);
 		buffer->set_memory_property_flags(memory_property_flags);
 

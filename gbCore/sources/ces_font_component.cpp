@@ -177,7 +177,7 @@ namespace gb
             
             ui32 format = 0;
             
-#if USED_GRAPHICS_API == OPENGL_30_API || USED_GRAPHICS_API == METAL_API
+#if USED_GRAPHICS_API == OPENGL_30_API || USED_GRAPHICS_API == METAL_API || USED_GRAPHICS_API == VULKAN_API
             
             format = gl::constant::red;
             

@@ -27,7 +27,7 @@
     <textures>
         <texture
         filename=""
-        render_operation_name="ss.crossfade.attachment_01"
+        render_operation_name="ws.base.attachment_01"
         sampler_index="0"
         wrap_mode="GL_CLAMP_TO_EDGE"
         mag_filter="GL_LINEAR"

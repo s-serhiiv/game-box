@@ -48,6 +48,7 @@ namespace gb
             texture_transfering_data->m_data[slice] = std::get<0>(result);
             texture_transfering_data->m_size = std::get<1>(result);
             texture_transfering_data->m_format = std::get<3>(result);
+            assert(std::get<1>(result) == std::get<2>(result));
             
             resource_serializer::close_stream(filestream);
         }

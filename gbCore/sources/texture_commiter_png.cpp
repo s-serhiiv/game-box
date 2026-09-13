@@ -139,11 +139,10 @@ namespace gb
 
 		mem_alloc_info.allocationSize = mem_requirements.size;
 
-		VkDeviceMemory device_memory;
 		mem_alloc_info.memoryTypeIndex = vk_device::get_instance()->get_memory_type(mem_requirements.memoryTypeBits, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
-		result = vkAllocateMemory(vk_device::get_instance()->get_logical_device(), &mem_alloc_info, nullptr, &device_memory);
+		result = vkAllocateMemory(vk_device::get_instance()->get_logical_device(), &mem_alloc_info, nullptr, &texture_transfering_data->m_image_memory);
 		assert(result == VK_SUCCESS);
-		result = vkBindImageMemory(vk_device::get_instance()->get_logical_device(), texture_transfering_data->m_image, device_memory, 0);
+		result = vkBindImageMemory(vk_device::get_instance()->get_logical_device(), texture_transfering_data->m_image, texture_transfering_data->m_image_memory, 0);
 		assert(result == VK_SUCCESS);
 
 		VkImageSubresourceRange subresource_range = {};
@@ -198,6 +197,7 @@ namespace gb
 		sampler_info.maxLod = 0.0f;
 
 		VK_CHECK(vkCreateSampler(vk_device::get_instance()->get_logical_device(), &sampler_info, nullptr, &texture_transfering_data->m_sampler));
+		texture_transfering_data->m_is_image_owner = true;
 
 #elif USED_GRAPHICS_API == METAL_API
         

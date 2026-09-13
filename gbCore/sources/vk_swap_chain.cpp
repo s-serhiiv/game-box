@@ -51,20 +51,19 @@ namespace gb
 		create_info.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
 
 		vk_device::vk_queue_family queue_family = vk_device::get_instance()->get_queue_family();
+		ui32 queue_families[] = { static_cast<ui32>(queue_family.m_graphics_family), static_cast<ui32>(queue_family.m_present_family) };
 
 		if (queue_family.m_graphics_family != queue_family.m_present_family)
 		{
 			create_info.imageSharingMode = VK_SHARING_MODE_CONCURRENT;
 			create_info.queueFamilyIndexCount = 2;
-			ui32 queue_families[] = { (ui32)queue_family.m_graphics_family, (ui32)queue_family.m_present_family };
 			create_info.pQueueFamilyIndices = queue_families;
 		}
 		else
 		{
 			create_info.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
-			create_info.queueFamilyIndexCount = 1;
-			ui32 queue_families[] = { (ui32)queue_family.m_graphics_family };
-			create_info.pQueueFamilyIndices = queue_families;
+			create_info.queueFamilyIndexCount = 0;
+			create_info.pQueueFamilyIndices = nullptr;
 		}
 
 		create_info.preTransform = swap_chain_support.m_capabilities.currentTransform;
@@ -155,7 +154,7 @@ namespace gb
 		subpass_description.pPreserveAttachments = nullptr;
 		subpass_description.pResolveAttachments = nullptr;
 
-		std::array<VkSubpassDependency, 2> dependencies;
+		std::array<VkSubpassDependency, 2> dependencies = {};
 
 		dependencies[0].srcSubpass = VK_SUBPASS_EXTERNAL;
 		dependencies[0].dstSubpass = 0;
@@ -244,11 +243,11 @@ namespace gb
 	{
 		if (formats.size() == 1 && formats[0].format == VK_FORMAT_UNDEFINED)
 		{
-			return { VK_FORMAT_B8G8R8A8_UNORM, VK_COLOR_SPACE_SRGB_NONLINEAR_KHR };
+			return { VK_FORMAT_B8G8R8A8_SRGB, VK_COLOR_SPACE_SRGB_NONLINEAR_KHR };
 		}
 		for (const auto& format : formats)
 		{
-			if (format.format == VK_FORMAT_B8G8R8A8_UNORM && format.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR)
+			if (format.format == VK_FORMAT_B8G8R8A8_SRGB && format.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR)
 			{
 				return format;
 			}
@@ -281,7 +280,8 @@ namespace gb
 		}
 		else
 		{
-			VkExtent2D actual_extent = { window->get_width(), window->get_height() };
+			const auto resolution = window->get_resolution_size_in_pixels();
+			VkExtent2D actual_extent = { static_cast<ui32>(resolution.x), static_cast<ui32>(resolution.y) };
 
 			actual_extent.width = std::max(capabilities.minImageExtent.width, std::min(capabilities.maxImageExtent.width, actual_extent.width));
 			actual_extent.height = std::max(capabilities.minImageExtent.height, std::min(capabilities.maxImageExtent.height, actual_extent.height));

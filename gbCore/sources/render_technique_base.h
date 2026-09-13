@@ -38,9 +38,9 @@ namespace gb
 
 #endif
         
-#if USED_GRAPHICS_API == METAL_API
+#if USED_GRAPHICS_API == METAL_API || USED_GRAPHICS_API == VULKAN_API
       
-        mtl_render_pass_descriptor_shared_ptr m_render_pass_descriptor = nullptr;
+        render_pass_descriptor_shared_ptr m_render_pass_descriptor = nullptr;
         
 #endif
         
@@ -62,7 +62,7 @@ namespace gb
         
         void set_uniforms(const std::shared_ptr<ces_render_technique_uniforms_component::shader_uniforms>& uniforms);
         
-#if USED_GRAPHICS_API == METAL_API
+#if USED_GRAPHICS_API == METAL_API || USED_GRAPHICS_API == VULKAN_API
         
         std::vector<texture_shared_ptr> get_color_attachments_texture();
         

@@ -42,6 +42,7 @@ namespace gb
 
 		VkBuffer get_handler() const;
 		VkDeviceMemory get_memory() const;
+		const VkDescriptorBufferInfo& get_descriptor() const;
 		void* get_mapped_data() const;
 
 		VkDeviceSize get_size() const;
