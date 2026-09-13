@@ -223,7 +223,11 @@ return get_mat_mvp() * vec4(a_position, 1.0); \n\
             layout(binding = 10) uniform sampler2D sampler_08;\n\
         #else\n\
             layout(binding = 0) uniform sampler2D sampler_01;\n\
-            layout(binding = 1) uniform sampler2D sampler_02;\n\
+            #if defined(GB_SAMPLER_02_CUBE)\n\
+                layout(binding = 1) uniform samplerCube sampler_02;\n\
+            #else\n\
+                layout(binding = 1) uniform sampler2D sampler_02;\n\
+            #endif\n\
             layout(binding = 2) uniform sampler2D sampler_03;\n\
             layout(binding = 3) uniform sampler2D sampler_04;\n\
             layout(binding = 4) uniform sampler2D sampler_05;\n\
@@ -233,7 +237,11 @@ return get_mat_mvp() * vec4(a_position, 1.0); \n\
         #endif\n\
     #else\n\
         uniform sampler2D sampler_01;\n\
-        uniform sampler2D sampler_02;\n\
+        #if defined(GB_SAMPLER_02_CUBE)\n\
+            uniform samplerCube sampler_02;\n\
+        #else\n\
+            uniform sampler2D sampler_02;\n\
+        #endif\n\
         uniform sampler2D sampler_03;\n\
         uniform sampler2D sampler_04;\n\
         uniform sampler2D sampler_05;\n\
@@ -252,7 +260,11 @@ return get_mat_mvp() * vec4(a_position, 1.0); \n\
     varying mat3 v_mat_tbn;\n\
     \n\
     uniform sampler2D sampler_01;\n\
-    uniform sampler2D sampler_02;\n\
+    #if defined(GB_SAMPLER_02_CUBE)\n\
+        uniform samplerCube sampler_02;\n\
+    #else\n\
+        uniform sampler2D sampler_02;\n\
+    #endif\n\
     uniform sampler2D sampler_03;\n\
     uniform sampler2D sampler_04;\n\
     uniform sampler2D sampler_05;\n\
@@ -335,17 +347,17 @@ return get_mat_mvp() * vec4(a_position, 1.0); \n\
         
 #endif
 
+        if (source_code.find("GB_SAMPLER_02_CUBE") != std::string::npos)
+        {
+            define.append("#define GB_SAMPLER_02_CUBE\n");
+        }
+
 #if USED_GRAPHICS_API == VULKAN_API
 
 		define.append("#version 450\n");
 		define.append("#define VULKAN_API\n");
 		define.append("#define USE_LAYOUTS\n");
 		define.append("#define USE_BINDINGS\n");
-		if (source_code.find("GB_SAMPLER_02_CUBE") != std::string::npos)
-		{
-			define.append("#define GB_SAMPLER_02_CUBE\n");
-		}
-
 #endif
         
         define.append(shader_header);

@@ -19,8 +19,8 @@
 
 #elif defined(__WINOS__)
 
-// #define USED_GRAPHICS_API OPENGL_30_API
-#define USED_GRAPHICS_API VULKAN_API
+#define USED_GRAPHICS_API OPENGL_30_API
+// #define USED_GRAPHICS_API VULKAN_API
 
 #elif defined(__TVOS__)
 
@@ -504,6 +504,24 @@ namespace gb
                 
 #endif
                 
+#if defined(DEBUG)
+                get_error();
+#endif
+            };
+
+            inline void draw_buffers(i32 count, const ui32* buffers)
+            {
+#if USED_GRAPHICS_API == OPENGL_30_API
+
+                glDrawBuffers(count, buffers);
+
+#else
+
+                (void)count;
+                (void)buffers;
+
+#endif
+
 #if defined(DEBUG)
                 get_error();
 #endif

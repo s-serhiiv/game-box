@@ -166,7 +166,7 @@ namespace gb
         if(attributes.at(e_shader_attribute_texcoord) >= 0)
         {
             gl::command::enable_vertex_attribute(attributes.at(e_shader_attribute_texcoord));
-            gl::command::bind_vertex_attribute(attributes.at(e_shader_attribute_texcoord), 2, gl::constant::ui16_t, gl::constant::yes,
+            gl::command::bind_vertex_attribute(attributes.at(e_shader_attribute_texcoord), 2, gl::constant::f32_t, gl::constant::no,
                                      sizeof(vertex_attribute_PTC),
                                      (void*)offsetof(vertex_attribute_PTC, m_texcoord));
         }

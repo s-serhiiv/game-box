@@ -13,6 +13,7 @@
 #include "texture.h"
 #include "mesh_2d.h"
 #include "material.h"
+#include "attachment_configuration.h"
 
 #if USED_GRAPHICS_API == METAL_API || USED_GRAPHICS_API == VULKAN_API
 
@@ -22,6 +23,38 @@
 
 namespace gb
 {
+#if USED_GRAPHICS_API == OPENGL_30_API
+
+    static void get_ogl_attachment_format(ui32 format, i32* internal_format, ui32* pixel_format, ui32* pixel_type)
+    {
+        *pixel_format = GL_RGBA;
+        switch (format)
+        {
+            case 71:
+                *internal_format = GL_RGBA8;
+                *pixel_type = GL_UNSIGNED_BYTE;
+                break;
+            case 72:
+                *internal_format = GL_RGBA8;
+                *pixel_type = GL_UNSIGNED_BYTE;
+                break;
+            case 115:
+                *internal_format = GL_RGBA16F;
+                *pixel_type = GL_HALF_FLOAT;
+                break;
+            case 125:
+                *internal_format = GL_RGBA32F;
+                *pixel_type = GL_FLOAT;
+                break;
+            default:
+                *internal_format = GL_RGBA8;
+                *pixel_type = GL_UNSIGNED_BYTE;
+                break;
+        }
+    }
+
+#endif
+
     render_technique_ws::render_technique_ws(ui32 width, ui32 height, const std::string& name, ui32 index,
                                              bool is_depth_compare_mode_enabled, i32 num_passes) :
     gb::render_technique_base(width, height, name, index),
@@ -39,19 +72,55 @@ namespace gb
                                                                                                 configuration->get_is_depth_compare_mode_enabled(),
                                                                                                 configuration->get_num_passes());
         
-        ui32 color_attachment_id = 0;
         ui32 depth_attachment_id = 0;
-        
-        gl::command::create_textures(1, &color_attachment_id);
-        gl::command::bind_texture(gl::constant::texture_2d, color_attachment_id);
-        gl::command::texture_parameter_i(gl::constant::texture_2d, gl::constant::texture_min_filter, gl::constant::linear);
-        gl::command::texture_parameter_i(gl::constant::texture_2d, gl::constant::texture_mag_filter, gl::constant::linear);
-        gl::command::texture_parameter_i(gl::constant::texture_2d, gl::constant::texture_wrap_s, gl::constant::clamp_to_edge);
-        gl::command::texture_parameter_i(gl::constant::texture_2d, gl::constant::texture_wrap_t, gl::constant::clamp_to_edge);
-        gl::command::texture_image2d(gl::constant::texture_2d, 0, gl::constant::rgba_t,
-                                     configuration->get_frame_width(),
-                                     configuration->get_frame_height(), 0, gl::constant::rgba_t, gl::constant::ui8_t, NULL);
-        
+
+#if USED_GRAPHICS_API == OPENGL_30_API
+
+        gl::command::create_frame_buffers(1, &render_technique->m_frame_buffer);
+        gl::command::bind_frame_buffer(gl::constant::frame_buffer, render_technique->m_frame_buffer);
+
+        std::vector<ui32> draw_buffers;
+        const auto attachments_configurations = configuration->get_attachments_configurations();
+        for (ui32 attachment_index = 0; attachment_index < attachments_configurations.size(); ++attachment_index)
+        {
+            const auto attachment_configuration = std::static_pointer_cast<gb::attachment_configuration>(attachments_configurations.at(attachment_index));
+            if (attachment_index == 0)
+            {
+                render_technique->m_clear_color = glm::vec4(attachment_configuration->get_clear_color_r(),
+                                                           attachment_configuration->get_clear_color_g(),
+                                                           attachment_configuration->get_clear_color_b(),
+                                                           attachment_configuration->get_clear_color_a());
+            }
+            ui32 color_attachment_id = 0;
+            i32 internal_format = GL_RGBA8;
+            ui32 pixel_format = GL_RGBA;
+            ui32 pixel_type = GL_UNSIGNED_BYTE;
+            get_ogl_attachment_format(attachment_configuration->get_pixel_format(), &internal_format, &pixel_format, &pixel_type);
+
+            gl::command::create_textures(1, &color_attachment_id);
+            gl::command::bind_texture(gl::constant::texture_2d, color_attachment_id);
+            gl::command::texture_parameter_i(gl::constant::texture_2d, gl::constant::texture_min_filter, gl::constant::linear);
+            gl::command::texture_parameter_i(gl::constant::texture_2d, gl::constant::texture_mag_filter, gl::constant::linear);
+            gl::command::texture_parameter_i(gl::constant::texture_2d, gl::constant::texture_wrap_s, gl::constant::clamp_to_edge);
+            gl::command::texture_parameter_i(gl::constant::texture_2d, gl::constant::texture_wrap_t, gl::constant::clamp_to_edge);
+            gl::command::texture_image2d(gl::constant::texture_2d, 0, internal_format,
+                                         configuration->get_frame_width(),
+                                         configuration->get_frame_height(),
+                                         0, pixel_format, pixel_type, NULL);
+
+            const ui32 color_attachment = gl::constant::color_attachment_0 + attachment_index;
+            gl::command::attach_frame_buffer_texture2d(gl::constant::frame_buffer, color_attachment, gl::constant::texture_2d, color_attachment_id, 0);
+            draw_buffers.push_back(color_attachment);
+
+            const auto attachment_texture = texture::construct(configuration->get_guid() + "." + attachment_configuration->get_name(),
+                                                               color_attachment_id,
+                                                               configuration->get_frame_width(),
+                                                               configuration->get_frame_height());
+            attachment_texture->set_wrap_mode(gl::constant::clamp_to_edge);
+            render_technique->m_color_attachments_texture.push_back(attachment_texture);
+        }
+        gl::command::draw_buffers(static_cast<i32>(draw_buffers.size()), draw_buffers.data());
+
         gl::command::create_textures(1, &depth_attachment_id);
         gl::command::bind_texture(gl::constant::texture_2d, depth_attachment_id);
         gl::command::texture_parameter_i(gl::constant::texture_2d, gl::constant::texture_min_filter, gl::constant::linear);
@@ -107,10 +176,6 @@ namespace gb
         
 #endif
         
-        gl::command::create_frame_buffers(1, &render_technique->m_frame_buffer);
-        gl::command::bind_frame_buffer(gl::constant::frame_buffer, render_technique->m_frame_buffer);
-        gl::command::attach_frame_buffer_texture2d(gl::constant::frame_buffer, gl::constant::color_attachment_0, gl::constant::texture_2d, color_attachment_id, 0);
-        
 #if defined(__OSX__)
         
         gl::command::attach_frame_buffer_texture2d(gl::constant::frame_buffer, gl::constant::depth_stencil_attachment, gl::constant::texture_2d, depth_attachment_id, 0);
@@ -125,12 +190,8 @@ namespace gb
         ui32 status = gl::command::check_frame_buffer_status(gl::constant::frame_buffer);
         assert(status == gl::constant::frame_buffer_complete);
         
-        std::string color_attachment_guid = configuration->get_guid();
-        color_attachment_guid.append(".color");
-        render_technique->m_color_attachment_texture = texture::construct(color_attachment_guid,
-                                                        color_attachment_id,
-                                                        configuration->get_frame_width(),
-                                                        configuration->get_frame_height());
+        assert(!render_technique->m_color_attachments_texture.empty());
+        render_technique->m_color_attachment_texture = render_technique->m_color_attachments_texture.at(0);
         
         std::string depth_attachment_guid = configuration->get_guid();
         depth_attachment_guid.append(".depth");
@@ -139,14 +200,16 @@ namespace gb
                                                         configuration->get_frame_width(),
                                                         configuration->get_frame_height());
         
-        render_technique->m_color_attachment_texture->set_wrap_mode(gl::constant::clamp_to_edge);
         render_technique->m_depth_attachment_texture->set_wrap_mode(gl::constant::clamp_to_edge);
+
+#endif
         
 #if USED_GRAPHICS_API == METAL_API || USED_GRAPHICS_API == VULKAN_API
         
         render_technique->m_render_pass_descriptor = render_pass_descriptor::construct_ws_render_pass_descriptor(configuration);
         const auto color_attachments_texture = render_technique->m_render_pass_descriptor->get_color_attachments_texture();
         assert(!color_attachments_texture.empty());
+        render_technique->m_color_attachments_texture = color_attachments_texture;
         render_technique->m_color_attachment_texture = color_attachments_texture.at(0);
 
 #if USED_GRAPHICS_API == VULKAN_API

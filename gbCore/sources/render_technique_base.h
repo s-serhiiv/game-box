@@ -29,6 +29,7 @@ namespace gb
         glm::vec4 m_clear_color;
         std::string m_name;
         ui32 m_order;
+        std::vector<texture_shared_ptr> m_color_attachments_texture;
 
 #if USED_GRAPHICS_API == VULKAN_API
 
@@ -62,11 +63,7 @@ namespace gb
         
         void set_uniforms(const std::shared_ptr<ces_render_technique_uniforms_component::shader_uniforms>& uniforms);
         
-#if USED_GRAPHICS_API == METAL_API || USED_GRAPHICS_API == VULKAN_API
-        
         std::vector<texture_shared_ptr> get_color_attachments_texture();
-        
-#endif
         
         virtual void bind() = 0;
         virtual void unbind() = 0;

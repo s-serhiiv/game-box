@@ -59,13 +59,16 @@ if (-not (Test-Path -LiteralPath $shadercOutputLibrary) -or
 }
 
 $bundleRoot = Join-Path $workspaceRoot "gbBundle"
+$resourcesRoot = Join-Path $workspaceRoot "gbResources"
 $sharedResourcesRoot = Join-Path $workspaceRoot "gbWin32SharedResources"
 $resourceExtensions = @(".xml", ".json", ".vert", ".frag", ".ani", ".png", ".gb3dmesh", ".gb3danim", ".ttf", ".otf", ".tmx", ".tsx", ".mp3", ".fcl")
 New-Item -ItemType Directory -Path $sharedResourcesRoot -Force | Out-Null
-Get-ChildItem -LiteralPath $bundleRoot -Recurse -File | Where-Object {
-    $resourceExtensions -contains $_.Extension.ToLowerInvariant()
-} | ForEach-Object {
-    Copy-Item -LiteralPath $_.FullName -Destination (Join-Path $sharedResourcesRoot $_.Name) -Force
+foreach ($resourceRoot in @($bundleRoot, $resourcesRoot)) {
+    Get-ChildItem -LiteralPath $resourceRoot -Recurse -File | Where-Object {
+        $resourceExtensions -contains $_.Extension.ToLowerInvariant()
+    } | ForEach-Object {
+        Copy-Item -LiteralPath $_.FullName -Destination (Join-Path $sharedResourcesRoot $_.Name) -Force
+    }
 }
 
 Write-Host "Build completed: $executable" -ForegroundColor Green

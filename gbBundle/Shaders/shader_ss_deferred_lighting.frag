@@ -5,7 +5,7 @@ void main()
     vec4 color = opaque_color + transparent_color;
     vec4 lighting = texture2D(sampler_03, v_texcoord);
     vec4 mask = texture2D(sampler_04, v_texcoord);
-    color.rgb *= clamp(lighting.rgb, vec3(mask.r * 0.15), vec3(0.999));
+    color.rgb *= clamp(lighting.rgb, vec3(max(mask.r * 0.15, 0.25)), vec3(0.999));
     gl_FragColor = color;
 }
 

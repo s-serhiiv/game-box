@@ -91,14 +91,10 @@ namespace gb
         m_uniforms[uniforms->get_type()] = uniforms;
     }
     
-#if USED_GRAPHICS_API == METAL_API || USED_GRAPHICS_API == VULKAN_API
-    
     std::vector<texture_shared_ptr> render_technique_base::get_color_attachments_texture()
     {
-        return m_render_pass_descriptor->get_color_attachments_texture();
+        return m_color_attachments_texture;
     }
-    
-#endif
 }
 
 #endif

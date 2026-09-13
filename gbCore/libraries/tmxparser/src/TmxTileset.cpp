@@ -122,8 +122,16 @@ namespace Tmx
 
             if ( tileset_doc.ErrorID() != 0)
             {
-                fprintf(stderr, "failed to load tileset file '%s'\n", fileName.c_str());
-                return;
+                const std::string source = source_name;
+                const size_t separator = source.find_last_of("/\\");
+                fileName = file_path + source.substr(separator == std::string::npos ? 0 : separator + 1);
+                tileset_doc.Clear();
+                tileset_doc.LoadFile( fileName.c_str() );
+                if ( tileset_doc.ErrorID() != 0)
+                {
+                    fprintf(stderr, "failed to load tileset file '%s'\n", fileName.c_str());
+                    return;
+                }
             }
 
             // Update node and element references to the new node
