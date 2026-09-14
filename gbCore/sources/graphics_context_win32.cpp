@@ -188,6 +188,7 @@ namespace gb
 		}
 
 		glewInit();
+		gl::command::front_face(gl::constant::clockwise);
 
 		i32 binded_frame_buffer_handle = 0;
 		glGetIntegerv(GL_FRAMEBUFFER_BINDING, &binded_frame_buffer_handle);

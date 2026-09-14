@@ -22,6 +22,17 @@ namespace gb
             ui32 static_draw = GL_STATIC_DRAW;
             ui32 dynamic_draw = GL_DYNAMIC_DRAW;
             ui32 f32_t = GL_FLOAT;
+
+#if USED_GRAPHICS_API == OPENGL_30_API
+
+            ui32 f16_t = GL_HALF_FLOAT;
+
+#elif USED_GRAPHICS_API == OPENGL_20_API
+
+            ui32 f16_t = GL_HALF_FLOAT_OES;
+
+#endif
+
             ui32 i32_t = GL_INT;
             ui32 ui32_t = GL_UNSIGNED_INT;
             
@@ -55,6 +66,8 @@ namespace gb
             ui32 linear_mipmap_nearest = GL_LINEAR_MIPMAP_NEAREST;
             ui32 front = GL_FRONT;
             ui32 back = GL_BACK;
+            ui32 clockwise = GL_CW;
+            ui32 counter_clockwise = GL_CCW;
             ui32 src_color = GL_SRC_COLOR;
             ui32 src_alpha = GL_SRC_ALPHA;
             ui32 one = GL_ONE;
@@ -164,6 +177,7 @@ namespace gb
             ui32 static_draw = 3;
             ui32 dynamic_draw = 4;
             ui32 f32_t = 5;
+            ui32 f16_t = 92;
             ui32 i32_t = 6;
             ui32 ui32_t = 7;
             ui32 ui24_8_t = 8;
@@ -187,6 +201,8 @@ namespace gb
             ui32 linear_mipmap_nearest = 26;
             ui32 front = 27;
             ui32 back = 28;
+            ui32 clockwise = 93;
+            ui32 counter_clockwise = 94;
             ui32 src_color = 29;
             ui32 src_alpha = 30;
             ui32 one = 31;

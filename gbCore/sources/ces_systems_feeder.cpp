@@ -39,9 +39,10 @@ namespace gb
         {
             while(!m_changed_entities.empty())
             {
-                const auto& it = m_changed_entities.front();
+                const auto it = m_changed_entities.front();
                 m_changed_entities.pop();
-                if(!it.second.expired())
+                const auto entity = it.second.lock();
+                if(entity)
                 {
                     for (const auto& system : m_ordered_systems)
                     {
@@ -65,17 +66,17 @@ namespace gb
                             }
                             if(it.first == e_entity_state_changed || it.first == e_entity_state_removed)
                             {
-                                required_mask.second.erase(std::remove_if(required_mask.second.begin(), required_mask.second.end(), [&it](const ces_entity_weak_ptr& weak_entity) {
-                                    bool result = weak_entity.lock() == it.second.lock();
+                                required_mask.second.erase(std::remove_if(required_mask.second.begin(), required_mask.second.end(), [&entity](const ces_entity_weak_ptr& weak_entity) {
+                                    bool result = weak_entity.lock() == entity;
                                     result |= weak_entity.expired();
                                     return result;
                                 }), required_mask.second.end());
                             }
                             if(it.first == e_entity_state_changed || it.first == e_entity_state_added)
                             {
-                                if(it.second.lock()->is_components_exist(required_mask.first))
+                                if(entity->is_components_exist(required_mask.first))
                                 {
-                                    required_mask.second.push_back(it.second);
+                                    required_mask.second.push_back(entity);
                                 }
                             }
                         }
@@ -137,8 +138,9 @@ namespace gb
         const auto& system = m_systems.find(type);
         if(system != m_systems.end())
         {
+            const auto system_to_remove = system->second;
             m_systems.erase(system);
-            const auto& iterator = std::find(m_ordered_systems.begin(), m_ordered_systems.end(), system->second);
+            const auto& iterator = std::find(m_ordered_systems.begin(), m_ordered_systems.end(), system_to_remove);
             if(iterator != m_ordered_systems.end())
             {
                 m_ordered_systems.erase(iterator);

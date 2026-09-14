@@ -124,6 +124,7 @@ namespace gb
             extern ui32 static_draw;
             extern ui32 dynamic_draw;
             extern ui32 f32_t;
+            extern ui32 f16_t;
             extern ui32 i32_t;
             extern ui32 ui32_t;
             extern ui32 ui24_8_t;
@@ -147,6 +148,8 @@ namespace gb
             extern ui32 linear_mipmap_nearest;
             extern ui32 front;
             extern ui32 back;
+            extern ui32 clockwise;
+            extern ui32 counter_clockwise;
             extern ui32 src_color;
             extern ui32 src_alpha;
             extern ui32 one;
@@ -504,6 +507,19 @@ namespace gb
                 
 #endif
                 
+#if defined(DEBUG)
+                get_error();
+#endif
+            };
+
+            inline void front_face(ui32 mode)
+            {
+#if USED_GRAPHICS_API == OPENGL_20_API || USED_GRAPHICS_API == OPENGL_30_API
+
+                glFrontFace(mode);
+
+#endif
+
 #if defined(DEBUG)
                 get_error();
 #endif

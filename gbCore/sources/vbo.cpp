@@ -210,7 +210,7 @@ namespace gb
 
 		m_attributes_description[1].binding = 0;
 		m_attributes_description[1].location = m_attributes_locations["m_texcoord"];
-		m_attributes_description[1].format = VK_FORMAT_R16G16_UNORM;
+		m_attributes_description[1].format = VK_FORMAT_R16G16_SFLOAT;
 		m_attributes_description[1].offset = offsetof(vertex_attribute_PT4B, m_texcoord);
 
 		m_attributes_description[2].binding = 0;
@@ -260,7 +260,7 @@ namespace gb
         if(attributes.at(e_shader_attribute_texcoord) >= 0)
         {
             gl::command::enable_vertex_attribute(attributes.at(e_shader_attribute_texcoord));
-            gl::command::bind_vertex_attribute(attributes.at(e_shader_attribute_texcoord), 2, gl::constant::ui16_t, gl::constant::yes,
+            gl::command::bind_vertex_attribute(attributes.at(e_shader_attribute_texcoord), 2, gl::constant::f16_t, gl::constant::no,
                                      sizeof(vertex_attribute_PT4B),
                                      (void*)offsetof(vertex_attribute_PT4B, m_texcoord));
         }
@@ -315,7 +315,7 @@ namespace gb
 
 		m_attributes_description[1].binding = 0;
 		m_attributes_description[1].location = m_attributes_locations["m_texcoord"];
-		m_attributes_description[1].format = VK_FORMAT_R16G16_UNORM;
+		m_attributes_description[1].format = VK_FORMAT_R16G16_SFLOAT;
 		m_attributes_description[1].offset = offsetof(vertex_attribute_PTNTC, m_texcoord);
 
 		m_attributes_description[2].binding = 0;
@@ -372,7 +372,7 @@ namespace gb
         if(attributes.at(e_shader_attribute_texcoord) >= 0)
         {
             gl::command::enable_vertex_attribute(attributes.at(e_shader_attribute_texcoord));
-            gl::command::bind_vertex_attribute(attributes.at(e_shader_attribute_texcoord), 2, gl::constant::ui16_t, gl::constant::yes,
+            gl::command::bind_vertex_attribute(attributes.at(e_shader_attribute_texcoord), 2, gl::constant::f16_t, gl::constant::no,
                                      sizeof(vertex_attribute_PTNTC),
                                      (void*)offsetof(vertex_attribute_PTNTC, m_texcoord));
         }

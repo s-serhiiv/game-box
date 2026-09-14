@@ -325,6 +325,7 @@ return get_mat_mvp() * vec4(a_position, 1.0); \n\
 #elif defined(__WINOS__)
 
 		define.append("#version 420\n");
+		define.append("#define __WINOS__\n");
         define.append("#define USE_BINDINGS\n");
         
 #endif
