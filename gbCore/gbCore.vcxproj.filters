@@ -121,6 +121,9 @@
     <Filter Include="libraries\tinyxml2">
       <UniqueIdentifier>{62c7cf5f-62ac-43a6-bf2b-77f780071503}</UniqueIdentifier>
     </Filter>
+    <Filter Include="libraries\ufbx">
+      <UniqueIdentifier>{b328f6d1-c80c-4a6b-bc83-9c42bd1095c4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="libraries\box2d\Box2D.h">
@@ -663,6 +666,9 @@
     <ClInclude Include="libraries\zlib-1.2.8\zutil.h">
       <Filter>libraries\zlib</Filter>
     </ClInclude>
+    <ClInclude Include="libraries\ufbx\ufbx.h">
+      <Filter>libraries\ufbx</Filter>
+    </ClInclude>
     <ClInclude Include="sources\thread_operation.h">
       <Filter>sources\thread pool managment</Filter>
     </ClInclude>
@@ -976,6 +982,9 @@
       <Filter>sources\resources managment\operations</Filter>
     </ClInclude>
     <ClInclude Include="sources\mesh_3d_serializer_gbmesh3d.h">
+      <Filter>sources\resources managment\operations\serializers</Filter>
+    </ClInclude>
+    <ClInclude Include="sources\mesh_3d_serializer_fbx.h">
       <Filter>sources\resources managment\operations\serializers</Filter>
     </ClInclude>
     <ClInclude Include="sources\mesh_3d_commiter_gbmesh3d.h">
@@ -2121,6 +2130,9 @@
     <ClInclude Include="sources\animation_3d_sequence_serializer_gbanim3d.h">
       <Filter>sources\resources managment\operations\serializers</Filter>
     </ClInclude>
+    <ClInclude Include="sources\animation_3d_sequence_serializer_fbx.h">
+      <Filter>sources\resources managment\operations\serializers</Filter>
+    </ClInclude>
     <ClInclude Include="sources\particle_emitter.h">
       <Filter>sources\scene graph managment</Filter>
     </ClInclude>
@@ -2314,6 +2326,9 @@
     </ClCompile>
     <ClCompile Include="libraries\zlib-1.2.8\zutil.c">
       <Filter>libraries\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\ufbx\ufbx.c">
+      <Filter>libraries\ufbx</Filter>
     </ClCompile>
     <ClCompile Include="sources\thread_operation.cpp">
       <Filter>sources\thread pool managment</Filter>
@@ -2661,6 +2676,9 @@
       <Filter>sources\resources managment\operations</Filter>
     </ClCompile>
     <ClCompile Include="sources\mesh_3d_serializer_gbmesh3d.cpp">
+      <Filter>sources\resources managment\operations\serializers</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\mesh_3d_serializer_fbx.cpp">
       <Filter>sources\resources managment\operations\serializers</Filter>
     </ClCompile>
     <ClCompile Include="sources\mesh_3d_commiter_gbmesh3d.cpp">
@@ -3665,11 +3683,17 @@
     <ClCompile Include="sources\animation_3d_sequence_serializer_gbanim3d.cpp">
       <Filter>sources\resources managment\operations\serializers</Filter>
     </ClCompile>
+    <ClCompile Include="sources\animation_3d_sequence_serializer_fbx.cpp">
+      <Filter>sources\resources managment\operations\serializers</Filter>
+    </ClCompile>
     <ClCompile Include="sources\particle_emitter.cpp">
       <Filter>sources\scene graph managment</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <None Include="libraries\ufbx\LICENSE">
+      <Filter>libraries\ufbx</Filter>
+    </None>
     <None Include="libraries\glm\core\func_common.inl">
       <Filter>libraries\glm</Filter>
     </None>

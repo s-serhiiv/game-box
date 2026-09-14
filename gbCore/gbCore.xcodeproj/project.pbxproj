@@ -1043,6 +1043,18 @@
 		F30EFFF51EC5F26A007BC868 /* mesh_3d_serializer_gbmesh3d.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F30EFFF21EC5F26A007BC868 /* mesh_3d_serializer_gbmesh3d.cpp */; };
 		F30EFFF61EC5F26A007BC868 /* mesh_3d_serializer_gbmesh3d.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F30EFFF21EC5F26A007BC868 /* mesh_3d_serializer_gbmesh3d.cpp */; };
 		F30EFFF71EC5F26A007BC868 /* mesh_3d_serializer_gbmesh3d.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F30EFFF21EC5F26A007BC868 /* mesh_3d_serializer_gbmesh3d.cpp */; };
+		FB2601000000000000000001 /* animation_3d_sequence_serializer_fbx.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FB2600000000000000000001 /* animation_3d_sequence_serializer_fbx.cpp */; };
+		FB2601000000000000000002 /* animation_3d_sequence_serializer_fbx.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FB2600000000000000000001 /* animation_3d_sequence_serializer_fbx.cpp */; };
+		FB2601000000000000000003 /* animation_3d_sequence_serializer_fbx.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FB2600000000000000000001 /* animation_3d_sequence_serializer_fbx.cpp */; };
+		FB2601000000000000000004 /* animation_3d_sequence_serializer_fbx.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FB2600000000000000000001 /* animation_3d_sequence_serializer_fbx.cpp */; };
+		FB2601000000000000000011 /* mesh_3d_serializer_fbx.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FB2600000000000000000003 /* mesh_3d_serializer_fbx.cpp */; };
+		FB2601000000000000000012 /* mesh_3d_serializer_fbx.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FB2600000000000000000003 /* mesh_3d_serializer_fbx.cpp */; };
+		FB2601000000000000000013 /* mesh_3d_serializer_fbx.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FB2600000000000000000003 /* mesh_3d_serializer_fbx.cpp */; };
+		FB2601000000000000000014 /* mesh_3d_serializer_fbx.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FB2600000000000000000003 /* mesh_3d_serializer_fbx.cpp */; };
+		FB2601000000000000000021 /* ufbx.c in Sources */ = {isa = PBXBuildFile; fileRef = FB2600000000000000000005 /* ufbx.c */; };
+		FB2601000000000000000022 /* ufbx.c in Sources */ = {isa = PBXBuildFile; fileRef = FB2600000000000000000005 /* ufbx.c */; };
+		FB2601000000000000000023 /* ufbx.c in Sources */ = {isa = PBXBuildFile; fileRef = FB2600000000000000000005 /* ufbx.c */; };
+		FB2601000000000000000024 /* ufbx.c in Sources */ = {isa = PBXBuildFile; fileRef = FB2600000000000000000005 /* ufbx.c */; };
 		F30EFFFA1EC5F2D7007BC868 /* animation_3d_sequence_3d_commiter_gbanim3d.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F30EFFF81EC5F2D7007BC868 /* animation_3d_sequence_3d_commiter_gbanim3d.cpp */; };
 		F30EFFFB1EC5F2D7007BC868 /* animation_3d_sequence_3d_commiter_gbanim3d.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F30EFFF81EC5F2D7007BC868 /* animation_3d_sequence_3d_commiter_gbanim3d.cpp */; };
 		F30EFFFC1EC5F2D7007BC868 /* animation_3d_sequence_3d_commiter_gbanim3d.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F30EFFF81EC5F2D7007BC868 /* animation_3d_sequence_3d_commiter_gbanim3d.cpp */; };
@@ -2902,6 +2914,13 @@
 		F30EFFED1EC5F233007BC868 /* animation_3d_sequence_serializer_gbanim3d.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = animation_3d_sequence_serializer_gbanim3d.h; path = sources/animation_3d_sequence_serializer_gbanim3d.h; sourceTree = "<group>"; };
 		F30EFFF21EC5F26A007BC868 /* mesh_3d_serializer_gbmesh3d.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = mesh_3d_serializer_gbmesh3d.cpp; path = sources/mesh_3d_serializer_gbmesh3d.cpp; sourceTree = "<group>"; };
 		F30EFFF31EC5F26A007BC868 /* mesh_3d_serializer_gbmesh3d.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mesh_3d_serializer_gbmesh3d.h; path = sources/mesh_3d_serializer_gbmesh3d.h; sourceTree = "<group>"; };
+		FB2600000000000000000001 /* animation_3d_sequence_serializer_fbx.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = animation_3d_sequence_serializer_fbx.cpp; path = sources/animation_3d_sequence_serializer_fbx.cpp; sourceTree = "<group>"; };
+		FB2600000000000000000002 /* animation_3d_sequence_serializer_fbx.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = animation_3d_sequence_serializer_fbx.h; path = sources/animation_3d_sequence_serializer_fbx.h; sourceTree = "<group>"; };
+		FB2600000000000000000003 /* mesh_3d_serializer_fbx.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = mesh_3d_serializer_fbx.cpp; path = sources/mesh_3d_serializer_fbx.cpp; sourceTree = "<group>"; };
+		FB2600000000000000000004 /* mesh_3d_serializer_fbx.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mesh_3d_serializer_fbx.h; path = sources/mesh_3d_serializer_fbx.h; sourceTree = "<group>"; };
+		FB2600000000000000000005 /* ufbx.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ufbx.c; sourceTree = "<group>"; };
+		FB2600000000000000000006 /* ufbx.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ufbx.h; sourceTree = "<group>"; };
+		FB2600000000000000000007 /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		F30EFFF81EC5F2D7007BC868 /* animation_3d_sequence_3d_commiter_gbanim3d.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = animation_3d_sequence_3d_commiter_gbanim3d.cpp; path = sources/animation_3d_sequence_3d_commiter_gbanim3d.cpp; sourceTree = "<group>"; };
 		F30EFFF91EC5F2D7007BC868 /* animation_3d_sequence_commiter_gbanim3d.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = animation_3d_sequence_commiter_gbanim3d.h; path = sources/animation_3d_sequence_commiter_gbanim3d.h; sourceTree = "<group>"; };
 		F30EFFFE1EC5F305007BC868 /* mesh_3d_commiter_gbmesh3d.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = mesh_3d_commiter_gbmesh3d.cpp; path = sources/mesh_3d_commiter_gbmesh3d.cpp; sourceTree = "<group>"; };
@@ -3434,6 +3453,10 @@
 				F30EFFEC1EC5F233007BC868 /* animation_3d_sequence_serializer_gbanim3d.cpp */,
 				F30EFFF31EC5F26A007BC868 /* mesh_3d_serializer_gbmesh3d.h */,
 				F30EFFF21EC5F26A007BC868 /* mesh_3d_serializer_gbmesh3d.cpp */,
+				FB2600000000000000000002 /* animation_3d_sequence_serializer_fbx.h */,
+				FB2600000000000000000001 /* animation_3d_sequence_serializer_fbx.cpp */,
+				FB2600000000000000000004 /* mesh_3d_serializer_fbx.h */,
+				FB2600000000000000000003 /* mesh_3d_serializer_fbx.cpp */,
 				92A6B0D321C7AA7B0037422A /* scene_3d_serializer_gbscene3d.h */,
 				92A6B0D221C7AA7B0037422A /* scene_3d_serializer_gbscene3d.cpp */,
 				9213BA8822144B1300F8ACB5 /* scene_2d_serializer_tmx.h */,
@@ -3719,6 +3742,7 @@
 				21B404931B7A0A87003382AB /* libpng-1.6.23 */,
 				21B404AA1B7A0A87003382AB /* pugixml */,
 				21B404AE1B7A0A87003382AB /* zlib-1.2.8 */,
+				FB2600000000000000000008 /* ufbx */,
 			);
 			name = libraries;
 			sourceTree = "<group>";
@@ -4226,6 +4250,17 @@
 			);
 			name = "zlib-1.2.8";
 			path = "libraries/zlib-1.2.8";
+			sourceTree = "<group>";
+		};
+		FB2600000000000000000008 /* ufbx */ = {
+			isa = PBXGroup;
+			children = (
+				FB2600000000000000000007 /* LICENSE */,
+				FB2600000000000000000005 /* ufbx.c */,
+				FB2600000000000000000006 /* ufbx.h */,
+			);
+			name = ufbx;
+			path = libraries/ufbx;
 			sourceTree = "<group>";
 		};
 		21B405961B7A0DC9003382AB /* common */ = {
@@ -5761,6 +5796,9 @@
 				F3DA3CB21F541D35001A4127 /* heightmap_configuration.cpp in Sources */,
 				F3FA55301F348DF2003FE616 /* ttkern.c in Sources */,
 				F30EFFF01EC5F233007BC868 /* animation_3d_sequence_serializer_gbanim3d.cpp in Sources */,
+				FB2601000000000000000003 /* animation_3d_sequence_serializer_fbx.cpp in Sources */,
+				FB2601000000000000000013 /* mesh_3d_serializer_fbx.cpp in Sources */,
+				FB2601000000000000000023 /* ufbx.c in Sources */,
 				9228BF0422254C8600348741 /* omni_deferred_light_source_3d_configuration.cpp in Sources */,
 				F3FA557C1F348DF2003FE616 /* truetype.c in Sources */,
 				921BBA342268B27700482139 /* MemberFuncTrap.cpp in Sources */,
@@ -6268,6 +6306,9 @@
 				921BBA262268B27700482139 /* RuleArray.cpp in Sources */,
 				921FE66922DCBAB0000B3EC9 /* b2CapsuleContact.cpp in Sources */,
 				F30EFFEE1EC5F233007BC868 /* animation_3d_sequence_serializer_gbanim3d.cpp in Sources */,
+				FB2601000000000000000001 /* animation_3d_sequence_serializer_fbx.cpp in Sources */,
+				FB2601000000000000000011 /* mesh_3d_serializer_fbx.cpp in Sources */,
+				FB2601000000000000000021 /* ufbx.c in Sources */,
 				F3FA557A1F348DF2003FE616 /* truetype.c in Sources */,
 				21DE30511B8B15240046EDF8 /* shader_loading_operation.cpp in Sources */,
 				21B406021B7B630B003382AB /* shader_configuration.cpp in Sources */,
@@ -6774,6 +6815,9 @@
 				F3FA538F1F348DF2003FE616 /* cffload.c in Sources */,
 				F3FA552F1F348DF2003FE616 /* ttkern.c in Sources */,
 				F30EFFEF1EC5F233007BC868 /* animation_3d_sequence_serializer_gbanim3d.cpp in Sources */,
+				FB2601000000000000000002 /* animation_3d_sequence_serializer_fbx.cpp in Sources */,
+				FB2601000000000000000012 /* mesh_3d_serializer_fbx.cpp in Sources */,
+				FB2601000000000000000022 /* ufbx.c in Sources */,
 				F3FA557B1F348DF2003FE616 /* truetype.c in Sources */,
 				21B4054A1B7A0AFA003382AB /* b2ChainAndPolygonContact.cpp in Sources */,
 				21B4054B1B7A0AFA003382AB /* b2Body.cpp in Sources */,
@@ -7150,6 +7194,9 @@
 				F36DF11D1E953B3C00EAE49B /* render_technique_main.cpp in Sources */,
 				F36DF11E1E953B3C00EAE49B /* adler32.c in Sources */,
 				F30EFFF11EC5F233007BC868 /* animation_3d_sequence_serializer_gbanim3d.cpp in Sources */,
+				FB2601000000000000000004 /* animation_3d_sequence_serializer_fbx.cpp in Sources */,
+				FB2601000000000000000014 /* mesh_3d_serializer_fbx.cpp in Sources */,
+				FB2601000000000000000024 /* ufbx.c in Sources */,
 				9213BA75221441DC00F8ACB5 /* TmxObjectGroup.cpp in Sources */,
 				921BBA092268B27700482139 /* MemberFuncSingle.cpp in Sources */,
 				9233A12F21E4A26D007D3942 /* animation_3d_bone_mask_configuration.cpp in Sources */,

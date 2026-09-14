@@ -61,7 +61,7 @@ if (-not (Test-Path -LiteralPath $shadercOutputLibrary) -or
 $bundleRoot = Join-Path $workspaceRoot "gbBundle"
 $resourcesRoot = Join-Path $workspaceRoot "gbResources"
 $sharedResourcesRoot = Join-Path $workspaceRoot "gbWin32SharedResources"
-$resourceExtensions = @(".xml", ".json", ".vert", ".frag", ".ani", ".png", ".gb3dmesh", ".gb3danim", ".ttf", ".otf", ".tmx", ".tsx", ".mp3", ".fcl")
+$resourceExtensions = @(".xml", ".json", ".vert", ".frag", ".ani", ".png", ".gb3dmesh", ".gb3danim", ".fbx", ".ttf", ".otf", ".tmx", ".tsx", ".mp3", ".fcl")
 New-Item -ItemType Directory -Path $sharedResourcesRoot -Force | Out-Null
 foreach ($resourceRoot in @($bundleRoot, $resourcesRoot)) {
     Get-ChildItem -LiteralPath $resourceRoot -Recurse -File | Where-Object {

@@ -514,11 +514,13 @@
     <ClInclude Include="libraries\zlib-1.2.8\zconf.h" />
     <ClInclude Include="libraries\zlib-1.2.8\zlib.h" />
     <ClInclude Include="libraries\zlib-1.2.8\zutil.h" />
+    <ClInclude Include="libraries\ufbx\ufbx.h" />
     <ClInclude Include="sources\animation_3d_mask.h" />
     <ClInclude Include="sources\animation_3d_sequence.h" />
     <ClInclude Include="sources\animation_3d_sequence_commiter_gbanim3d.h" />
     <ClInclude Include="sources\animation_3d_sequence_loading_operation.h" />
     <ClInclude Include="sources\animation_3d_sequence_serializer_gbanim3d.h" />
+    <ClInclude Include="sources\animation_3d_sequence_serializer_fbx.h" />
     <ClInclude Include="sources\batch.h" />
     <ClInclude Include="sources\batching_pipeline.h" />
     <ClInclude Include="sources\binding_connection.h" />
@@ -625,6 +627,7 @@
     <ClInclude Include="sources\mesh_3d_commiter_gbmesh3d.h" />
     <ClInclude Include="sources\mesh_3d_loading_operation.h" />
     <ClInclude Include="sources\mesh_3d_serializer_gbmesh3d.h" />
+    <ClInclude Include="sources\mesh_3d_serializer_fbx.h" />
     <ClInclude Include="sources\mesh_constructor.h" />
     <ClInclude Include="sources\mtl_buffer.h" />
     <ClInclude Include="sources\mtl_depth_stencil_state.h" />
@@ -1006,11 +1009,15 @@
     <ClCompile Include="libraries\zlib-1.2.8\trees.c" />
     <ClCompile Include="libraries\zlib-1.2.8\uncompr.c" />
     <ClCompile Include="libraries\zlib-1.2.8\zutil.c" />
+    <ClCompile Include="libraries\ufbx\ufbx.c">
+      <CompileAs>CompileAsC</CompileAs>
+    </ClCompile>
     <ClCompile Include="sources\animation_3d_mask.cpp" />
     <ClCompile Include="sources\animation_3d_sequence.cpp" />
     <ClCompile Include="sources\animation_3d_sequence_3d_commiter_gbanim3d.cpp" />
     <ClCompile Include="sources\animation_3d_sequence_loading_operation.cpp" />
     <ClCompile Include="sources\animation_3d_sequence_serializer_gbanim3d.cpp" />
+    <ClCompile Include="sources\animation_3d_sequence_serializer_fbx.cpp" />
     <ClCompile Include="sources\batch.cpp" />
     <ClCompile Include="sources\batching_pipeline.cpp" />
     <ClCompile Include="sources\binding_connection.cpp" />
@@ -1122,6 +1129,7 @@
     <ClCompile Include="sources\mesh_3d_commiter_gbmesh3d.cpp" />
     <ClCompile Include="sources\mesh_3d_loading_operation.cpp" />
     <ClCompile Include="sources\mesh_3d_serializer_gbmesh3d.cpp" />
+    <ClCompile Include="sources\mesh_3d_serializer_fbx.cpp" />
     <ClCompile Include="sources\mesh_constructor.cpp" />
     <ClCompile Include="sources\mtl_buffer.cpp" />
     <ClCompile Include="sources\mtl_depth_stencil_state.cpp" />
@@ -1186,6 +1194,7 @@
     <ClCompile Include="sources\window_impl_tvos.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="libraries\ufbx\LICENSE" />
     <None Include="libraries\glm\core\func_common.inl" />
     <None Include="libraries\glm\core\func_exponential.inl" />
     <None Include="libraries\glm\core\func_geometric.inl" />

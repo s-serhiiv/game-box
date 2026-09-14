@@ -157,7 +157,7 @@ namespace gb
                 std::stringstream string_stream_guid;
                 string_stream_guid<<animation_sequence->get_guid()<<"_"<<animation_3d_sequence_configuration->get_start_index()<<"_"<<animation_3d_sequence_configuration->get_end_index();
                 
-                const auto sequence_data = std::make_shared<sequence_3d_transfering_data>(animation_3d_sequence_configuration->get_animation_name(), 30, frames);
+                const auto sequence_data = std::make_shared<sequence_3d_transfering_data>(animation_3d_sequence_configuration->get_animation_name(), animation_sequence->get_animation_fps(), frames);
                 animation_sequence = animation_3d_sequence::construct(string_stream_guid.str(), sequence_data);
                 
             }

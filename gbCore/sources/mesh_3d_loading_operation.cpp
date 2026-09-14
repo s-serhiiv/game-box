@@ -9,6 +9,7 @@
 #include "mesh_3d_loading_operation.h"
 #include "mesh_3d.h"
 #include "mesh_3d_serializer_gbmesh3d.h"
+#include "mesh_3d_serializer_fbx.h"
 #include "mesh_3d_commiter_gbmesh3d.h"
 
 namespace gb
@@ -34,6 +35,10 @@ namespace gb
         {
             m_serializer = std::make_shared<mesh_3d_serializer_gbmesh3d>(m_filename, m_resource);
         }
+        else if(m_filename.find(".fbx") != std::string::npos || m_filename.find(".FBX") != std::string::npos)
+        {
+            m_serializer = std::make_shared<mesh_3d_serializer_fbx>(m_filename, m_resource);
+        }
         else
         {
             assert(false);
@@ -49,6 +54,10 @@ namespace gb
         assert(m_resource->is_loaded());
         
         if(m_filename.find(".GB3DMESH") != std::string::npos || m_filename.find(".GB3D_MESH") != std::string::npos)
+        {
+            m_commiter = std::make_shared<mesh_3d_commiter_gbmesh3d>(m_serializer->get_guid(), m_resource);
+        }
+        else if(m_filename.find(".fbx") != std::string::npos || m_filename.find(".FBX") != std::string::npos)
         {
             m_commiter = std::make_shared<mesh_3d_commiter_gbmesh3d>(m_serializer->get_guid(), m_resource);
         }

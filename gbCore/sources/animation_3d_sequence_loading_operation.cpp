@@ -10,6 +10,7 @@
 #include "mesh_3d.h"
 #include "animation_3d_sequence.h"
 #include "animation_3d_sequence_serializer_gbanim3d.h"
+#include "animation_3d_sequence_serializer_fbx.h"
 #include "animation_3d_sequence_commiter_gbanim3d.h"
 
 namespace gb
@@ -35,6 +36,10 @@ namespace gb
         {
             m_serializer = std::make_shared<animation_sequence_3d_serializer_gbanim3d>(m_filename, m_resource);
         }
+        else if(m_filename.find(".fbx") != std::string::npos || m_filename.find(".FBX") != std::string::npos)
+        {
+            m_serializer = std::make_shared<animation_3d_sequence_serializer_fbx>(m_filename, m_resource);
+        }
         else
         {
             assert(false);
@@ -50,6 +55,10 @@ namespace gb
         assert(m_resource->is_loaded());
         
         if(m_filename.find(".gb3danim") != std::string::npos || m_filename.find(".GB3D_ANIMATION") != std::string::npos)
+        {
+            m_commiter = std::make_shared<animation_sequence_3d_commiter_gbanim3d>(m_serializer->get_guid(), m_resource);
+        }
+        else if(m_filename.find(".fbx") != std::string::npos || m_filename.find(".FBX") != std::string::npos)
         {
             m_commiter = std::make_shared<animation_sequence_3d_commiter_gbanim3d>(m_serializer->get_guid(), m_resource);
         }
