@@ -312,6 +312,12 @@ return get_mat_mvp() * vec4(a_position, 1.0); \n\
         }
         
         std::string define = "";
+#if USED_GRAPHICS_API == VULKAN_API
+
+        define.append("#version 450\n");
+
+#endif
+
 #if USED_GRAPHICS_API == OPENGL_30_API
         
 #if defined(__OSX__)
@@ -355,7 +361,6 @@ return get_mat_mvp() * vec4(a_position, 1.0); \n\
 
 #if USED_GRAPHICS_API == VULKAN_API
 
-		define.append("#version 450\n");
 		define.append("#define VULKAN_API\n");
 		define.append("#define USE_LAYOUTS\n");
 		define.append("#define USE_BINDINGS\n");

@@ -19,8 +19,8 @@
 
 #elif defined(__WINOS__)
 
-#define USED_GRAPHICS_API OPENGL_30_API
-// #define USED_GRAPHICS_API VULKAN_API
+// #define USED_GRAPHICS_API OPENGL_30_API
+#define USED_GRAPHICS_API VULKAN_API
 
 #elif defined(__TVOS__)
 

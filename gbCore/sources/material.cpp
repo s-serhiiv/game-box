@@ -1569,7 +1569,7 @@ namespace gb
 		{
 			cull_mode = m_parameters->get_culling_mode() == gl::constant::front ? VK_CULL_MODE_FRONT_BIT : VK_CULL_MODE_BACK_BIT;
 		}
-		m_rasterization_state = vk_initializers::pipeline_rasterization_state_create_info(VK_POLYGON_MODE_FILL, cull_mode, VK_FRONT_FACE_COUNTER_CLOCKWISE, 0);
+		m_rasterization_state = vk_initializers::pipeline_rasterization_state_create_info(VK_POLYGON_MODE_FILL, cull_mode, VK_FRONT_FACE_CLOCKWISE, 0);
 
 		VkColorComponentFlags color_write_mask = 0;
 		color_write_mask |= m_parameters->get_is_color_mask_r() ? VK_COLOR_COMPONENT_R_BIT : 0;
